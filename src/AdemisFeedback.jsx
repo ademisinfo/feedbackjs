@@ -1,3 +1,12 @@
+/*
+ * This file is part of the Ademis Feedback library.
+ *
+ * Copyright (c) 2015 Titouan Galopin <galopintitouan@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 import _ from 'underscore';
 import React from 'react';
 import EventDispatcher from './services/EventDispatcher.jsx';
@@ -5,6 +14,11 @@ import Translator from './services/Translator.jsx';
 import Errors from './utils/Errors.jsx';
 import App from './components/App.jsx';
 
+/**
+ * Main entrypoint for the library
+ *
+ * @author Titouan Galopin <galopintitouan@gmail.com>
+ */
 class AdemisFeedback {
     constructor(options) {
         // Check <canvas> support
@@ -14,12 +28,13 @@ class AdemisFeedback {
             Errors.incompatibleBrowser();
         }
 
-        this._container = null;
-        this._stylesheet = null;
-
         let defaultOptions = {
             locale: 'en',
-            theme: '/themes/default/feedback.css'
+            theme: '/themes/default/feedback.css',
+            dependencies: {
+                html2canvas: '//cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js',
+                fabric: '//cdnjs.cloudflare.com/ajax/libs/fabric.js/1.5.0/fabric.min.js'
+            }
         };
 
         // Options
@@ -35,24 +50,42 @@ class AdemisFeedback {
     }
 
     start() {
-        // Create stylesheet
-        this._stylesheet = document.createElement('link');
-        this._stylesheet.rel = 'stylesheet';
-        this._stylesheet.type = 'text/css';
-        this._stylesheet.href = this._options.theme;
+        // Load dependencies
+        document.head.appendChild(this._createScript(this._options.dependencies.html2canvas));
+        document.head.appendChild(this._createScript(this._options.dependencies.fabric));
 
-        document.head.appendChild(this._stylesheet);
+        // Load theme
+        document.head.appendChild(this._createStylesheet(this._options.theme));
 
         // Create HTML container
-        this._container = document.createElement('div');
-        this._container.id = 'ademis-feedback';
+        let container = document.createElement('div');
+        container.id = 'ademis-feedback';
 
-        document.body.appendChild(this._container);
+        document.body.appendChild(container);
 
         React.render(
             <App dispatcher={this._dispatcher} translator={this._translator} options={this._options} />,
-            this._container
+            container
         );
+    }
+
+    _createScript(src) {
+        let script = document.createElement('script');
+
+        script.type = 'text/javascript';
+        script.src = src;
+
+        return script;
+    }
+
+    _createStylesheet(href) {
+        let stylesheet = document.createElement('link');
+
+        stylesheet.rel = 'stylesheet';
+        stylesheet.type = 'text/css';
+        stylesheet.href = href;
+
+        return stylesheet;
     }
 }
 

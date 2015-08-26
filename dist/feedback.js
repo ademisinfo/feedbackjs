@@ -45,6 +45,15 @@ var AdemisFeedback =
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
+	/*
+	 * This file is part of the Ademis Feedback library.
+	 *
+	 * Copyright (c) 2015 Titouan Galopin <galopintitouan@gmail.com>
+	 *
+	 * For the full copyright and license information, please view the LICENSE
+	 * file that was distributed with this source code.
+	 */
+	
 	'use strict';
 	
 	Object.defineProperty(exports, '__esModule', {
@@ -81,6 +90,12 @@ var AdemisFeedback =
 	
 	var _componentsAppJsx2 = _interopRequireDefault(_componentsAppJsx);
 	
+	/**
+	 * Main entrypoint for the library
+	 *
+	 * @author Titouan Galopin <galopintitouan@gmail.com>
+	 */
+	
 	var AdemisFeedback = (function () {
 	    function AdemisFeedback(options) {
 	        _classCallCheck(this, AdemisFeedback);
@@ -92,12 +107,13 @@ var AdemisFeedback =
 	            _utilsErrorsJsx2['default'].incompatibleBrowser();
 	        }
 	
-	        this._container = null;
-	        this._stylesheet = null;
-	
 	        var defaultOptions = {
 	            locale: 'en',
-	            theme: '/themes/default/feedback.css'
+	            theme: '/themes/default/feedback.css',
+	            dependencies: {
+	                html2canvas: '//cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js',
+	                fabric: '//cdnjs.cloudflare.com/ajax/libs/fabric.js/1.5.0/fabric.min.js'
+	            }
 	        };
 	
 	        // Options
@@ -116,21 +132,41 @@ var AdemisFeedback =
 	    }, {
 	        key: 'start',
 	        value: function start() {
-	            // Create stylesheet
-	            this._stylesheet = document.createElement('link');
-	            this._stylesheet.rel = 'stylesheet';
-	            this._stylesheet.type = 'text/css';
-	            this._stylesheet.href = this._options.theme;
+	            // Load dependencies
+	            document.head.appendChild(this._createScript(this._options.dependencies.html2canvas));
+	            document.head.appendChild(this._createScript(this._options.dependencies.fabric));
 	
-	            document.head.appendChild(this._stylesheet);
+	            // Load theme
+	            document.head.appendChild(this._createStylesheet(this._options.theme));
 	
 	            // Create HTML container
-	            this._container = document.createElement('div');
-	            this._container.id = 'ademis-feedback';
+	            var container = document.createElement('div');
+	            container.id = 'ademis-feedback';
 	
-	            document.body.appendChild(this._container);
+	            document.body.appendChild(container);
 	
-	            _react2['default'].render(_react2['default'].createElement(_componentsAppJsx2['default'], { dispatcher: this._dispatcher, translator: this._translator, options: this._options }), this._container);
+	            _react2['default'].render(_react2['default'].createElement(_componentsAppJsx2['default'], { dispatcher: this._dispatcher, translator: this._translator, options: this._options }), container);
+	        }
+	    }, {
+	        key: '_createScript',
+	        value: function _createScript(src) {
+	            var script = document.createElement('script');
+	
+	            script.type = 'text/javascript';
+	            script.src = src;
+	
+	            return script;
+	        }
+	    }, {
+	        key: '_createStylesheet',
+	        value: function _createStylesheet(href) {
+	            var stylesheet = document.createElement('link');
+	
+	            stylesheet.rel = 'stylesheet';
+	            stylesheet.type = 'text/css';
+	            stylesheet.href = href;
+	
+	            return stylesheet;
 	        }
 	    }]);
 	
@@ -19852,6 +19888,15 @@ var AdemisFeedback =
 /* 158 */
 /***/ function(module, exports, __webpack_require__) {
 
+	/*
+	 * This file is part of the Ademis Feedback library.
+	 *
+	 * Copyright (c) 2015 Titouan Galopin <galopintitouan@gmail.com>
+	 *
+	 * For the full copyright and license information, please view the LICENSE
+	 * file that was distributed with this source code.
+	 */
+	
 	'use strict';
 	
 	Object.defineProperty(exports, '__esModule', {
@@ -19871,6 +19916,13 @@ var AdemisFeedback =
 	var _utilsErrorsJsx = __webpack_require__(159);
 	
 	var _utilsErrorsJsx2 = _interopRequireDefault(_utilsErrorsJsx);
+	
+	/**
+	 * Register listeners for given events names and dispatch these events to listeners
+	 * Let the external scripts execute actions at key moments of the library
+	 *
+	 * @author Titouan Galopin <galopintitouan@gmail.com>
+	 */
 	
 	var EventDispatcher = (function () {
 	    function EventDispatcher() {
@@ -19940,6 +19992,20 @@ var AdemisFeedback =
 /* 159 */
 /***/ function(module, exports) {
 
+	/*
+	 * This file is part of the Ademis Feedback library.
+	 *
+	 * Copyright (c) 2015 Titouan Galopin <galopintitouan@gmail.com>
+	 *
+	 * For the full copyright and license information, please view the LICENSE
+	 * file that was distributed with this source code.
+	 */
+	
+	/**
+	 * Centralized way to throw errors with useful messages for the developer
+	 *
+	 * @author Titouan Galopin <galopintitouan@gmail.com>
+	 */
 	'use strict';
 	
 	Object.defineProperty(exports, '__esModule', {
@@ -19961,7 +20027,7 @@ var AdemisFeedback =
 	        /*
 	         * General
 	         */
-	        value: function incompatibleBrowser(eventName) {
+	        value: function incompatibleBrowser() {
 	            throw new Error('[Ademis Feedback] Your browser is not compatible as it does not support <canvas>');
 	        }
 	
@@ -20004,6 +20070,15 @@ var AdemisFeedback =
 /* 160 */
 /***/ function(module, exports, __webpack_require__) {
 
+	/*
+	 * This file is part of the Ademis Feedback library.
+	 *
+	 * Copyright (c) 2015 Titouan Galopin <galopintitouan@gmail.com>
+	 *
+	 * For the full copyright and license information, please view the LICENSE
+	 * file that was distributed with this source code.
+	 */
+	
 	'use strict';
 	
 	Object.defineProperty(exports, '__esModule', {
@@ -20023,6 +20098,12 @@ var AdemisFeedback =
 	var _utilsErrorsJsx = __webpack_require__(159);
 	
 	var _utilsErrorsJsx2 = _interopRequireDefault(_utilsErrorsJsx);
+	
+	/**
+	 * Provide translations features for the library components
+	 *
+	 * @author Titouan Galopin <galopintitouan@gmail.com>
+	 */
 	
 	var Translator = (function () {
 	    function Translator(locale) {
@@ -20088,6 +20169,15 @@ var AdemisFeedback =
 /* 163 */
 /***/ function(module, exports, __webpack_require__) {
 
+	/*
+	 * This file is part of the Ademis Feedback library.
+	 *
+	 * Copyright (c) 2015 Titouan Galopin <galopintitouan@gmail.com>
+	 *
+	 * For the full copyright and license information, please view the LICENSE
+	 * file that was distributed with this source code.
+	 */
+	
 	'use strict';
 	
 	Object.defineProperty(exports, '__esModule', {
@@ -20119,6 +20209,13 @@ var AdemisFeedback =
 	var _ButtonJsx = __webpack_require__(164);
 	
 	var _ButtonJsx2 = _interopRequireDefault(_ButtonJsx);
+	
+	/**
+	 * Main component of the application
+	 * Handle the different states and handle events coming from underlying components
+	 *
+	 * @author Titouan Galopin <galopintitouan@gmail.com>
+	 */
 	
 	var App = (function (_React$Component) {
 	    _inherits(App, _React$Component);
@@ -20175,6 +20272,15 @@ var AdemisFeedback =
 /* 164 */
 /***/ function(module, exports, __webpack_require__) {
 
+	/*
+	 * This file is part of the Ademis Feedback library.
+	 *
+	 * Copyright (c) 2015 Titouan Galopin <galopintitouan@gmail.com>
+	 *
+	 * For the full copyright and license information, please view the LICENSE
+	 * file that was distributed with this source code.
+	 */
+	
 	"use strict";
 	
 	Object.defineProperty(exports, "__esModule", {
@@ -20194,6 +20300,13 @@ var AdemisFeedback =
 	var _react = __webpack_require__(2);
 	
 	var _react2 = _interopRequireDefault(_react);
+	
+	/**
+	 * Main button in the corner of the website
+	 * This component only render the button and delegate the event to the App component
+	 *
+	 * @author Titouan Galopin <galopintitouan@gmail.com>
+	 */
 	
 	var Button = (function (_React$Component) {
 	    _inherits(Button, _React$Component);

@@ -1,6 +1,20 @@
+/*
+ * This file is part of the Ademis Feedback library.
+ *
+ * Copyright (c) 2015 Titouan Galopin <galopintitouan@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 import _ from 'underscore';
 import Errors from '../utils/Errors.jsx';
 
+/**
+ * Provide translations features for the library components
+ *
+ * @author Titouan Galopin <galopintitouan@gmail.com>
+ */
 class Translator {
     constructor(locale) {
         let availableLocales = [ 'fr' ];
