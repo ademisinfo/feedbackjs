@@ -61,6 +61,18 @@ var AdemisFeedback =
 	
 	var _underscore2 = _interopRequireDefault(_underscore);
 	
+	var _servicesEventDispatcherJsx = __webpack_require__(2);
+	
+	var _servicesEventDispatcherJsx2 = _interopRequireDefault(_servicesEventDispatcherJsx);
+	
+	var _servicesTranslatorJsx = __webpack_require__(4);
+	
+	var _servicesTranslatorJsx2 = _interopRequireDefault(_servicesTranslatorJsx);
+	
+	var _utilsErrorsJsx = __webpack_require__(3);
+	
+	var _utilsErrorsJsx2 = _interopRequireDefault(_utilsErrorsJsx);
+	
 	var AdemisFeedback = (function () {
 	    function AdemisFeedback(options) {
 	        _classCallCheck(this, AdemisFeedback);
@@ -69,30 +81,28 @@ var AdemisFeedback =
 	        var canvas = document.createElement('canvas');
 	
 	        if (!canvas.getContext || !canvas.getContext('2d')) {
-	            throw new Error('[Ademis Feedback] Your browser is not compatible as it does not support <canvas>');
+	            _utilsErrorsJsx2['default'].incompatibleBrowser();
 	        }
 	
-	        this._options = options;
-	
-	        this._listeners = {
-	            'button:clicked': [],
-	            'screenshot:built': [],
-	            'screenshot:edited': [],
-	            'report:submit': [],
-	            'report:sent': []
+	        var defaultOptions = {
+	            locale: 'en'
 	        };
 	
+	        // Options
+	        this._options = _underscore2['default'].extend(defaultOptions, options);
+	
+	        // HTML container (initialized in AdemisFeedback::start())
 	        this._container = null;
+	
+	        // Services
+	        this._dispatcher = new _servicesEventDispatcherJsx2['default']();
+	        this._translator = new _servicesTranslatorJsx2['default'](this._options.locale);
 	    }
 	
 	    _createClass(AdemisFeedback, [{
 	        key: 'on',
 	        value: function on(eventName, listener) {
-	            if (typeof this._listeners[eventName] == 'undefined') {
-	                throw new Error('[Ademis Feedback] The event name "' + eventName + '" is not valid');
-	            }
-	
-	            this._listeners[eventName].push(listener);
+	            this._dispatcher.on(eventName, listener);
 	        }
 	    }, {
 	        key: 'start',
@@ -1677,6 +1687,242 @@ var AdemisFeedback =
 	    }.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	  }
 	}).call(undefined);
+
+/***/ },
+/* 2 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	    value: true
+	});
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	
+	var _underscore = __webpack_require__(1);
+	
+	var _underscore2 = _interopRequireDefault(_underscore);
+	
+	var _utilsErrorsJsx = __webpack_require__(3);
+	
+	var _utilsErrorsJsx2 = _interopRequireDefault(_utilsErrorsJsx);
+	
+	var EventDispatcher = (function () {
+	    function EventDispatcher() {
+	        _classCallCheck(this, EventDispatcher);
+	
+	        this._listeners = {
+	            'button:clicked': [],
+	            'screenshot:built': [],
+	            'screenshot:edited': [],
+	            'report:submit': [],
+	            'report:sent': []
+	        };
+	    }
+	
+	    _createClass(EventDispatcher, [{
+	        key: 'on',
+	        value: function on(eventName, listener) {
+	            if (typeof this._listeners[eventName] == 'undefined') {
+	                _utilsErrorsJsx2['default'].eventCanNotBeRegistered(eventName);
+	            }
+	
+	            this._listeners[eventName].push(listener);
+	        }
+	    }, {
+	        key: 'emit',
+	        value: function emit(eventName, payload) {
+	            if (typeof this._listeners[eventName] == 'undefined') {
+	                _utilsErrorsJsx2['default'].eventCanNotBeEmited(eventName);
+	            }
+	
+	            var _iteratorNormalCompletion = true;
+	            var _didIteratorError = false;
+	            var _iteratorError = undefined;
+	
+	            try {
+	                for (var _iterator = this._listeners[eventName][Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+	                    var listener = _step.value;
+	
+	                    payload = listener(payload);
+	                }
+	            } catch (err) {
+	                _didIteratorError = true;
+	                _iteratorError = err;
+	            } finally {
+	                try {
+	                    if (!_iteratorNormalCompletion && _iterator['return']) {
+	                        _iterator['return']();
+	                    }
+	                } finally {
+	                    if (_didIteratorError) {
+	                        throw _iteratorError;
+	                    }
+	                }
+	            }
+	
+	            return payload;
+	        }
+	    }]);
+	
+	    return EventDispatcher;
+	})();
+	
+	exports['default'] = EventDispatcher;
+	module.exports = exports['default'];
+
+/***/ },
+/* 3 */
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	    value: true
+	});
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	
+	var Errors = (function () {
+	    function Errors() {
+	        _classCallCheck(this, Errors);
+	    }
+	
+	    _createClass(Errors, null, [{
+	        key: 'incompatibleBrowser',
+	
+	        /*
+	         * General
+	         */
+	        value: function incompatibleBrowser(eventName) {
+	            throw new Error('[Ademis Feedback] Your browser is not compatible as it does not support <canvas>');
+	        }
+	
+	        /*
+	         * Translator
+	         */
+	    }, {
+	        key: 'localeNotFound',
+	        value: function localeNotFound(locale) {
+	            throw new Error('[Ademis Feedback] The translation locale "' + locale + '" was not found');
+	        }
+	    }, {
+	        key: 'translationNotFound',
+	        value: function translationNotFound(key, locale) {
+	            throw new Error('[Ademis Feedback] The translation key "' + key + '" in locale "' + locale + '" was not found');
+	        }
+	
+	        /*
+	         * Event dispatcher
+	         */
+	    }, {
+	        key: 'eventCanNotBeRegistered',
+	        value: function eventCanNotBeRegistered(eventName) {
+	            throw new Error('[Ademis Feedback] The event "' + eventName + '" can not be registered as it is not valid');
+	        }
+	    }, {
+	        key: 'eventCanNotBeEmited',
+	        value: function eventCanNotBeEmited(eventName) {
+	            throw new Error('[Ademis Feedback] The event "' + eventName + '" can not be emited as it is not valid');
+	        }
+	    }]);
+	
+	    return Errors;
+	})();
+	
+	exports['default'] = Errors;
+	module.exports = exports['default'];
+
+/***/ },
+/* 4 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	    value: true
+	});
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	
+	var _underscore = __webpack_require__(1);
+	
+	var _underscore2 = _interopRequireDefault(_underscore);
+	
+	var _utilsErrorsJsx = __webpack_require__(3);
+	
+	var _utilsErrorsJsx2 = _interopRequireDefault(_utilsErrorsJsx);
+	
+	var Translator = (function () {
+	    function Translator(locale) {
+	        _classCallCheck(this, Translator);
+	
+	        var availableLocales = ['fr'];
+	
+	        if (!_underscore2['default'].contains(availableLocales, locale)) {
+	            _utilsErrorsJsx2['default'].localeNotFound(locale);
+	        }
+	
+	        this._locale = locale;
+	        this._translations = __webpack_require__(5)("./" + locale + '.json');
+	    }
+	
+	    _createClass(Translator, [{
+	        key: 'translate',
+	        value: function translate(key) {
+	            if (typeof this._translations[key] == 'undefined') {
+	                _utilsErrorsJsx2['default'].translationNotFound(key, this._locale);
+	            }
+	
+	            return this._translations[key];
+	        }
+	    }]);
+	
+	    return Translator;
+	})();
+	
+	exports['default'] = Translator;
+	module.exports = exports['default'];
+
+/***/ },
+/* 5 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var map = {
+		"./fr.json": 6
+	};
+	function webpackContext(req) {
+		return __webpack_require__(webpackContextResolve(req));
+	};
+	function webpackContextResolve(req) {
+		return map[req] || (function() { throw new Error("Cannot find module '" + req + "'.") }());
+	};
+	webpackContext.keys = function webpackContextKeys() {
+		return Object.keys(map);
+	};
+	webpackContext.resolve = webpackContextResolve;
+	module.exports = webpackContext;
+	webpackContext.id = 5;
+
+
+/***/ },
+/* 6 */
+/***/ function(module, exports) {
+
+	module.exports = {
+		"button": "Signaler un problème"
+	}
 
 /***/ }
 /******/ ]);

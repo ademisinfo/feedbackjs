@@ -1,41 +1,40 @@
 import _ from 'underscore';
+import EventDispatcher from './services/EventDispatcher.jsx';
+import Translator from './services/Translator.jsx';
+import Errors from './utils/Errors.jsx';
 
 class AdemisFeedback {
-
     constructor(options) {
         // Check <canvas> support
-        var canvas = document.createElement('canvas');
+        let canvas = document.createElement('canvas');
 
         if (! canvas.getContext || ! canvas.getContext('2d')) {
-            throw new Error('[Ademis Feedback] Your browser is not compatible as it does not support <canvas>');
+            Errors.incompatibleBrowser();
         }
 
-        this._options = options;
-
-        this._listeners = {
-            'button:clicked': [],
-            'screenshot:built': [],
-            'screenshot:edited': [],
-            'report:submit': [],
-            'report:sent': []
+        let defaultOptions = {
+            locale: 'en'
         };
 
+        // Options
+        this._options = _.extend(defaultOptions, options);
+
+        // HTML container (initialized in AdemisFeedback::start())
         this._container = null;
+
+        // Services
+        this._dispatcher = new EventDispatcher();
+        this._translator = new Translator(this._options.locale);
     }
 
     on(eventName, listener) {
-        if (typeof this._listeners[eventName] == 'undefined') {
-            throw new Error('[Ademis Feedback] The event name "' + eventName + '" is not valid');
-        }
-
-        this._listeners[eventName].push(listener);
+        this._dispatcher.on(eventName, listener);
     }
 
     start() {
         this._container = document.createElement('div');
         this._container.id = 'ademis-feedback';
     }
-
 }
 
 export default AdemisFeedback;
