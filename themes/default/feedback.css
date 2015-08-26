@@ -1,4 +1,4 @@
-.ademis-feedback .button {
+.ademis-feedback-button {
     position: fixed;
     z-index: 9000;
     bottom: 0;
@@ -19,7 +19,7 @@
     text-decoration: underline;
 }
 
-.ademis-feedback .overlay {
+.ademis-feedback-overlay {
     outline: 0;
     position: fixed;
     top: 0;
@@ -30,7 +30,7 @@
     z-index: 9100;
 }
 
-.ademis-feedback .loader {
+.ademis-feedback-loader {
     outline: 0;
     position: fixed;
     padding: 30px 42px;
@@ -45,7 +45,7 @@
     box-shadow: 0 4px 16px rgba(0,0,0,.2);
 }
 
-.ademis-feedback .canvas {
+.ademis-feedback-canvas {
     outline: 0;
     position: fixed;
     top: 0;
