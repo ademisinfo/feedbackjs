@@ -20,3 +20,5 @@ uses, what plugins are installed, what is the HTML when the problem occured, etc
 
 The options of the library let you customize everything: you can choose how and where to send the reports,
 how the button should look, whether the users can edit their screenshots or not, etc.
+
+Default theme icons are the Material icons from Google: https://www.google.com/design/icons/.

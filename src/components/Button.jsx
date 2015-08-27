@@ -8,6 +8,7 @@
  */
 
 import React from 'react';
+import Translator from '../services/Translator.jsx';
 
 /**
  * Main button in the corner of the website
@@ -20,8 +21,8 @@ class Button extends React.Component {
         super();
 
         this.propTypes = {
-            label: React.PropTypes.string.isRequired,
-            onClick: React.PropTypes.func
+            translator: React.PropTypes.instanceOf(Translator).isRequired,
+            onClick: React.PropTypes.func.isRequired
         };
 
         this.handleClick = this.handleClick.bind(this);
@@ -32,9 +33,11 @@ class Button extends React.Component {
     }
 
     render() {
-        return  <button onClick={this.handleClick} className="ademis-feedback-button" id="ademis-feedback-button">
-                    {this.props.label}
-                </button>;
+        return (
+            <button onClick={this.handleClick} className="ademis-feedback-button" id="ademis-feedback-button">
+                {this.props.translator.translate('button')}
+            </button>
+        );
     }
 }
 

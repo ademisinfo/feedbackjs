@@ -10,7 +10,10 @@
 import React from 'react';
 import EventDispatcher from '../services/EventDispatcher.jsx';
 import Translator from '../services/Translator.jsx';
+import ScreenshotBuilder from '../utils/ScreenshotBuilder.jsx';
 import Button from './Button.jsx';
+import CanvasEditor from './CanvasEditor.jsx';
+import Loader from './Loader.jsx';
 
 /**
  * Main component of the application
@@ -30,22 +33,59 @@ class App extends React.Component {
 
         this.state = {
             status: 'none',
+            loading: false,
+            loadingFor: '',
             canvas: null
         };
 
         this.handleButtonClick = this.handleButtonClick.bind(this);
+        this.handleCanvasEditingContinue = this.handleCanvasEditingContinue.bind(this);
+        this.handleCanvasEditingCancel = this.handleCanvasEditingCancel.bind(this);
+
+        setTimeout(() => { this.handleButtonClick(); }, 500);
     }
 
-    handleButtonClick(event) {
-        console.log(event);
+    handleButtonClick() {
+        ScreenshotBuilder.createScreenshot((canvas) => {
+            this.setState({
+                status: 'editing',
+                canvas: canvas
+            });
+        });
+    }
+
+    handleCanvasEditingContinue() {
+        this.setState({
+            status: 'none',
+            canvas: null
+        });
+    }
+
+    handleCanvasEditingCancel() {
+        this.setState({
+            status: 'none',
+            canvas: null
+        });
     }
 
     render() {
-        let translator = this.props.translator;
         let rendered = [];
 
         if (this.state.status == 'none') {
-            rendered.push(<Button label={translator.translate('button')} onClick={this.handleButtonClick} />);
+            rendered.push(<Button translator={this.props.translator} onClick={this.handleButtonClick} />);
+        }
+
+        if (this.state.status == 'editing') {
+            rendered.push(<CanvasEditor canvas={this.state.canvas}
+                                        dispatcher={this.props.dispatcher}
+                                        translator={this.props.translator}
+                                        options={this.props.options}
+                                        onContinue={this.handleCanvasEditingContinue}
+                                        onCancel={this.handleCanvasEditingCancel} />);
+        }
+
+        if (this.state.status == 'loading') {
+            rendered.push(<Loader label="Envoi du signalement ..." />);
         }
 
         return <div>{rendered}</div>;

@@ -1,5 +1,7 @@
 var gulp = require('gulp-help')(require('gulp'));
 var gutil = require('gulp-util');
+var less = require('gulp-less');
+var minifyCSS = require('gulp-minify-css');
 var webpack = require('webpack');
 
 /*
@@ -102,10 +104,21 @@ gulp.task('webpack:development', 'Bundle the application for development environ
 });
 
 /*
+ * LESS
+ */
+gulp.task('less', function () {
+    return gulp.src('themes/default/feedback.less')
+        .pipe(less())
+        .pipe(minifyCSS())
+        .pipe(gulp.dest('themes/default/'));
+});
+
+/*
  * Watch for development
  */
-gulp.task('watch', 'Run webpack:development and watch for file changes', ['webpack:development'], function() {
+gulp.task('watch', 'Run webpack:development and watch for file changes', ['webpack:development', 'less'], function() {
     gulp.watch(['src/**/*'], ['webpack:development']);
+    gulp.watch(['themes/**/*.less'], ['less']);
 });
 
 /*

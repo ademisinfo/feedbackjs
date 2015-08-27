@@ -20206,9 +20206,21 @@ var AdemisFeedback =
 	
 	var _servicesTranslatorJsx2 = _interopRequireDefault(_servicesTranslatorJsx);
 	
-	var _ButtonJsx = __webpack_require__(164);
+	var _utilsScreenshotBuilderJsx = __webpack_require__(164);
+	
+	var _utilsScreenshotBuilderJsx2 = _interopRequireDefault(_utilsScreenshotBuilderJsx);
+	
+	var _ButtonJsx = __webpack_require__(165);
 	
 	var _ButtonJsx2 = _interopRequireDefault(_ButtonJsx);
+	
+	var _CanvasEditorJsx = __webpack_require__(166);
+	
+	var _CanvasEditorJsx2 = _interopRequireDefault(_CanvasEditorJsx);
+	
+	var _LoaderJsx = __webpack_require__(167);
+	
+	var _LoaderJsx2 = _interopRequireDefault(_LoaderJsx);
 	
 	/**
 	 * Main component of the application
@@ -20221,6 +20233,8 @@ var AdemisFeedback =
 	    _inherits(App, _React$Component);
 	
 	    function App() {
+	        var _this = this;
+	
 	        _classCallCheck(this, App);
 	
 	        _get(Object.getPrototypeOf(App.prototype), 'constructor', this).call(this);
@@ -20233,25 +20247,68 @@ var AdemisFeedback =
 	
 	        this.state = {
 	            status: 'none',
+	            loading: false,
+	            loadingFor: '',
 	            canvas: null
 	        };
 	
 	        this.handleButtonClick = this.handleButtonClick.bind(this);
+	        this.handleCanvasEditingContinue = this.handleCanvasEditingContinue.bind(this);
+	        this.handleCanvasEditingCancel = this.handleCanvasEditingCancel.bind(this);
+	
+	        setTimeout(function () {
+	            _this.handleButtonClick();
+	        }, 500);
 	    }
 	
 	    _createClass(App, [{
 	        key: 'handleButtonClick',
-	        value: function handleButtonClick(event) {
-	            console.log(event);
+	        value: function handleButtonClick() {
+	            var _this2 = this;
+	
+	            _utilsScreenshotBuilderJsx2['default'].createScreenshot(function (canvas) {
+	                _this2.setState({
+	                    status: 'editing',
+	                    canvas: canvas
+	                });
+	            });
+	        }
+	    }, {
+	        key: 'handleCanvasEditingContinue',
+	        value: function handleCanvasEditingContinue() {
+	            this.setState({
+	                status: 'none',
+	                canvas: null
+	            });
+	        }
+	    }, {
+	        key: 'handleCanvasEditingCancel',
+	        value: function handleCanvasEditingCancel() {
+	            this.setState({
+	                status: 'none',
+	                canvas: null
+	            });
 	        }
 	    }, {
 	        key: 'render',
 	        value: function render() {
-	            var translator = this.props.translator;
 	            var rendered = [];
 	
 	            if (this.state.status == 'none') {
-	                rendered.push(_react2['default'].createElement(_ButtonJsx2['default'], { label: translator.translate('button'), onClick: this.handleButtonClick }));
+	                rendered.push(_react2['default'].createElement(_ButtonJsx2['default'], { translator: this.props.translator, onClick: this.handleButtonClick }));
+	            }
+	
+	            if (this.state.status == 'editing') {
+	                rendered.push(_react2['default'].createElement(_CanvasEditorJsx2['default'], { canvas: this.state.canvas,
+	                    dispatcher: this.props.dispatcher,
+	                    translator: this.props.translator,
+	                    options: this.props.options,
+	                    onContinue: this.handleCanvasEditingContinue,
+	                    onCancel: this.handleCanvasEditingCancel }));
+	            }
+	
+	            if (this.state.status == 'loading') {
+	                rendered.push(_react2['default'].createElement(_LoaderJsx2['default'], { label: 'Envoi du signalement ...' }));
 	            }
 	
 	            return _react2['default'].createElement(
@@ -20270,6 +20327,58 @@ var AdemisFeedback =
 
 /***/ },
 /* 164 */
+/***/ function(module, exports) {
+
+	/*
+	 * This file is part of the Ademis Feedback library.
+	 *
+	 * Copyright (c) 2015 Titouan Galopin <galopintitouan@gmail.com>
+	 *
+	 * For the full copyright and license information, please view the LICENSE
+	 * file that was distributed with this source code.
+	 */
+	
+	/**
+	 * Create a screenshot of the current page using html2canvas
+	 *
+	 * @author Titouan Galopin <galopintitouan@gmail.com>
+	 */
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	    value: true
+	});
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	
+	var ScreenshotBuilder = (function () {
+	    function ScreenshotBuilder() {
+	        _classCallCheck(this, ScreenshotBuilder);
+	    }
+	
+	    _createClass(ScreenshotBuilder, null, [{
+	        key: 'createScreenshot',
+	        value: function createScreenshot(callback) {
+	            var button = document.getElementById('ademis-feedback-button');
+	            button.style.display = 'none';
+	
+	            html2canvas(document.body, { onrendered: function onrendered(canvas) {
+	                    button.style.display = 'block';
+	                    callback(canvas);
+	                } });
+	        }
+	    }]);
+	
+	    return ScreenshotBuilder;
+	})();
+	
+	exports['default'] = ScreenshotBuilder;
+	module.exports = exports['default'];
+
+/***/ },
+/* 165 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*
@@ -20281,25 +20390,29 @@ var AdemisFeedback =
 	 * file that was distributed with this source code.
 	 */
 	
-	"use strict";
+	'use strict';
 	
-	Object.defineProperty(exports, "__esModule", {
+	Object.defineProperty(exports, '__esModule', {
 	    value: true
 	});
 	
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 	
-	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
 	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 	
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
 	var _react = __webpack_require__(2);
 	
 	var _react2 = _interopRequireDefault(_react);
+	
+	var _servicesTranslatorJsx = __webpack_require__(160);
+	
+	var _servicesTranslatorJsx2 = _interopRequireDefault(_servicesTranslatorJsx);
 	
 	/**
 	 * Main button in the corner of the website
@@ -20314,37 +20427,335 @@ var AdemisFeedback =
 	    function Button() {
 	        _classCallCheck(this, Button);
 	
-	        _get(Object.getPrototypeOf(Button.prototype), "constructor", this).call(this);
+	        _get(Object.getPrototypeOf(Button.prototype), 'constructor', this).call(this);
 	
 	        this.propTypes = {
-	            label: _react2["default"].PropTypes.string.isRequired,
-	            onClick: _react2["default"].PropTypes.func
+	            translator: _react2['default'].PropTypes.instanceOf(_servicesTranslatorJsx2['default']).isRequired,
+	            onClick: _react2['default'].PropTypes.func.isRequired
 	        };
 	
 	        this.handleClick = this.handleClick.bind(this);
 	    }
 	
 	    _createClass(Button, [{
-	        key: "handleClick",
+	        key: 'handleClick',
 	        value: function handleClick(event) {
 	            return this.props.onClick(event);
 	        }
 	    }, {
-	        key: "render",
+	        key: 'render',
 	        value: function render() {
-	            return _react2["default"].createElement(
-	                "button",
-	                { onClick: this.handleClick, className: "ademis-feedback-button", id: "ademis-feedback-button" },
-	                this.props.label
+	            return _react2['default'].createElement(
+	                'button',
+	                { onClick: this.handleClick, className: 'ademis-feedback-button', id: 'ademis-feedback-button' },
+	                this.props.translator.translate('button')
 	            );
 	        }
 	    }]);
 	
 	    return Button;
-	})(_react2["default"].Component);
+	})(_react2['default'].Component);
 	
-	exports["default"] = Button;
-	module.exports = exports["default"];
+	exports['default'] = Button;
+	module.exports = exports['default'];
+
+/***/ },
+/* 166 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/*
+	 * This file is part of the Ademis Feedback library.
+	 *
+	 * Copyright (c) 2015 Titouan Galopin <galopintitouan@gmail.com>
+	 *
+	 * For the full copyright and license information, please view the LICENSE
+	 * file that was distributed with this source code.
+	 */
+	
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	    value: true
+	});
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var _react = __webpack_require__(2);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _servicesEventDispatcherJsx = __webpack_require__(158);
+	
+	var _servicesEventDispatcherJsx2 = _interopRequireDefault(_servicesEventDispatcherJsx);
+	
+	var _servicesTranslatorJsx = __webpack_require__(160);
+	
+	var _servicesTranslatorJsx2 = _interopRequireDefault(_servicesTranslatorJsx);
+	
+	/**
+	 * Main button in the corner of the website
+	 * This component only render the button and delegate the event to the App component
+	 *
+	 * @author Titouan Galopin <galopintitouan@gmail.com>
+	 */
+	
+	var CanvasEditor = (function (_React$Component) {
+	    _inherits(CanvasEditor, _React$Component);
+	
+	    function CanvasEditor() {
+	        _classCallCheck(this, CanvasEditor);
+	
+	        _get(Object.getPrototypeOf(CanvasEditor.prototype), 'constructor', this).call(this);
+	
+	        this.propTypes = {
+	            canvas: _react2['default'].PropTypes.object.isRequired,
+	            dispatcher: _react2['default'].PropTypes.instanceOf(_servicesEventDispatcherJsx2['default']).isRequired,
+	            translator: _react2['default'].PropTypes.instanceOf(_servicesTranslatorJsx2['default']).isRequired,
+	            options: _react2['default'].PropTypes.object.isRequired,
+	            onContinue: _react2['default'].PropTypes.func.isRequired,
+	            onCancel: _react2['default'].PropTypes.func.isRequired
+	        };
+	
+	        this.editor = null;
+	        this.width = 0;
+	        this.height = 0;
+	
+	        this.state = {
+	            mode: 'comment',
+	            canvas: null
+	        };
+	
+	        this.handleCommentButtonClick = this.handleCommentButtonClick.bind(this);
+	        this.handleHideButtonClick = this.handleHideButtonClick.bind(this);
+	        this.handleArrowButtonClick = this.handleArrowButtonClick.bind(this);
+	        this.handleContinueButtonClick = this.handleContinueButtonClick.bind(this);
+	        this.handleCancelButtonClick = this.handleCancelButtonClick.bind(this);
+	    }
+	
+	    _createClass(CanvasEditor, [{
+	        key: 'componentDidMount',
+	        value: function componentDidMount() {
+	            document.body.style.overflow = 'hidden';
+	        }
+	    }, {
+	        key: 'componentWillUnmount',
+	        value: function componentWillUnmount() {
+	            document.body.style.overflow = 'auto';
+	        }
+	    }, {
+	        key: 'handleCommentButtonClick',
+	        value: function handleCommentButtonClick() {
+	            this.setState({ mode: 'comment' });
+	        }
+	    }, {
+	        key: 'handleHideButtonClick',
+	        value: function handleHideButtonClick() {
+	            this.setState({ mode: 'hide' });
+	        }
+	    }, {
+	        key: 'handleArrowButtonClick',
+	        value: function handleArrowButtonClick() {
+	            this.setState({ mode: 'arrow' });
+	        }
+	    }, {
+	        key: 'handleContinueButtonClick',
+	        value: function handleContinueButtonClick() {
+	            this.props.onContinue(this.canvas);
+	        }
+	    }, {
+	        key: 'handleCancelButtonClick',
+	        value: function handleCancelButtonClick() {
+	            this.props.onCancel(this.canvas);
+	        }
+	    }, {
+	        key: 'render',
+	        value: function render() {
+	            var editorBackground = { backgroundImage: 'url(' + this.props.canvas.toDataURL() + ')' };
+	
+	            return _react2['default'].createElement(
+	                'div',
+	                { className: 'ademis-feedback-editor', id: 'ademis-feedback-editor', style: editorBackground },
+	                _react2['default'].createElement(
+	                    'div',
+	                    { className: 'ademis-feedback-editor-sidebar' },
+	                    _react2['default'].createElement(
+	                        'h2',
+	                        { className: 'ademis-feedback-editor-title' },
+	                        'Feedback'
+	                    ),
+	                    _react2['default'].createElement(
+	                        'ul',
+	                        null,
+	                        _react2['default'].createElement(
+	                            'li',
+	                            { className: this.state.mode == 'comment' ? 'ademis-feedback-editor-sidebar-active' : '',
+	                                onClick: this.handleCommentButtonClick },
+	                            _react2['default'].createElement('i', { className: 'ademis-feedback-icon-comment' }),
+	                            _react2['default'].createElement('br', null),
+	                            _react2['default'].createElement(
+	                                'span',
+	                                null,
+	                                'Comment'
+	                            )
+	                        ),
+	                        _react2['default'].createElement(
+	                            'li',
+	                            { className: this.state.mode == 'hide' ? 'ademis-feedback-editor-sidebar-active' : '',
+	                                onClick: this.handleHideButtonClick },
+	                            _react2['default'].createElement('i', { className: 'ademis-feedback-icon-hide' }),
+	                            _react2['default'].createElement('br', null),
+	                            _react2['default'].createElement(
+	                                'span',
+	                                null,
+	                                'Hide'
+	                            )
+	                        ),
+	                        _react2['default'].createElement(
+	                            'li',
+	                            { className: this.state.mode == 'arrow' ? 'ademis-feedback-editor-sidebar-active' : '',
+	                                onClick: this.handleArrowButtonClick },
+	                            _react2['default'].createElement('i', { className: 'ademis-feedback-icon-arrow' }),
+	                            _react2['default'].createElement('br', null),
+	                            _react2['default'].createElement(
+	                                'span',
+	                                null,
+	                                'Arrow'
+	                            )
+	                        )
+	                    ),
+	                    _react2['default'].createElement(
+	                        'ul',
+	                        { className: 'ademis-feedback-editor-sidebar-bottom' },
+	                        _react2['default'].createElement(
+	                            'li',
+	                            { onClick: this.handleCancelButtonClick },
+	                            _react2['default'].createElement('i', { className: 'ademis-feedback-icon-cancel' }),
+	                            _react2['default'].createElement('br', null),
+	                            _react2['default'].createElement(
+	                                'span',
+	                                null,
+	                                'Cancel'
+	                            )
+	                        ),
+	                        _react2['default'].createElement(
+	                            'li',
+	                            { onClick: this.handleContinueButtonClick },
+	                            _react2['default'].createElement('i', { className: 'ademis-feedback-icon-continue' }),
+	                            _react2['default'].createElement('br', null),
+	                            _react2['default'].createElement(
+	                                'span',
+	                                null,
+	                                'Continue'
+	                            )
+	                        )
+	                    )
+	                )
+	            );
+	        }
+	    }]);
+	
+	    return CanvasEditor;
+	})(_react2['default'].Component);
+	
+	exports['default'] = CanvasEditor;
+	module.exports = exports['default'];
+
+/***/ },
+/* 167 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/*
+	 * This file is part of the Ademis Feedback library.
+	 *
+	 * Copyright (c) 2015 Titouan Galopin <galopintitouan@gmail.com>
+	 *
+	 * For the full copyright and license information, please view the LICENSE
+	 * file that was distributed with this source code.
+	 */
+	
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	    value: true
+	});
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var _react = __webpack_require__(2);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _servicesTranslatorJsx = __webpack_require__(160);
+	
+	var _servicesTranslatorJsx2 = _interopRequireDefault(_servicesTranslatorJsx);
+	
+	/**
+	 * Loader layer
+	 *
+	 * @author Titouan Galopin <galopintitouan@gmail.com>
+	 */
+	
+	var Loader = (function (_React$Component) {
+	    _inherits(Loader, _React$Component);
+	
+	    function Loader() {
+	        _classCallCheck(this, Loader);
+	
+	        _get(Object.getPrototypeOf(Loader.prototype), 'constructor', this).call(this);
+	
+	        this.propTypes = {
+	            label: _react2['default'].PropTypes.string.isRequired
+	        };
+	    }
+	
+	    _createClass(Loader, [{
+	        key: 'render',
+	        value: function render() {
+	            return _react2['default'].createElement(
+	                'div',
+	                { className: 'ademis-feedback-loader' },
+	                _react2['default'].createElement(
+	                    'div',
+	                    { className: 'ademis-feedback-loader-inner' },
+	                    _react2['default'].createElement(
+	                        'h1',
+	                        { className: 'ademis-feedback-loader-title' },
+	                        this.props.label
+	                    ),
+	                    _react2['default'].createElement(
+	                        'div',
+	                        { className: 'ademis-feedback-loader-slider' },
+	                        _react2['default'].createElement('div', { className: 'ademis-feedback-loader-line' }),
+	                        _react2['default'].createElement('div', { className: 'ademis-feedback-loader-break ademis-feedback-loader-dot1' }),
+	                        _react2['default'].createElement('div', { className: 'ademis-feedback-loader-break ademis-feedback-loader-dot2' }),
+	                        _react2['default'].createElement('div', { className: 'ademis-feedback-loader-break ademis-feedback-loader-dot3' })
+	                    )
+	                )
+	            );
+	        }
+	    }]);
+	
+	    return Loader;
+	})(_react2['default'].Component);
+	
+	exports['default'] = Loader;
+	module.exports = exports['default'];
 
 /***/ }
 /******/ ]);
