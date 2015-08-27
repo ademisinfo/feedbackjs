@@ -8,7 +8,6 @@
  */
 
 import React from 'react';
-import Translator from '../services/Translator.jsx';
 
 /**
  * Loader layer

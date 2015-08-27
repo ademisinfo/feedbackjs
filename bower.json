@@ -1,0 +1,26 @@
+{
+  "name": "ademis-feedback",
+  "version": "0.1.0",
+  "homepage": "https://github.com/ademisinfo/feedback",
+  "authors": [
+    "Titouan Galopin <galopintitouan@gmail.com>"
+  ],
+  "description": "Javascript library for in-website user bug report, with screenshot and context saved",
+  "main": "src/AdemisFeedback.jsx",
+  "keywords": [
+    "report",
+    "feedback",
+    "ademis",
+    "in-website",
+    "in-app",
+    "screenshot"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

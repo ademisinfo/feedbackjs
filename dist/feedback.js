@@ -20681,29 +20681,25 @@ var AdemisFeedback =
 	 * file that was distributed with this source code.
 	 */
 	
-	'use strict';
+	"use strict";
 	
-	Object.defineProperty(exports, '__esModule', {
+	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
 	
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 	
-	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
 	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 	
-	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
 	var _react = __webpack_require__(2);
 	
 	var _react2 = _interopRequireDefault(_react);
-	
-	var _servicesTranslatorJsx = __webpack_require__(160);
-	
-	var _servicesTranslatorJsx2 = _interopRequireDefault(_servicesTranslatorJsx);
 	
 	/**
 	 * Loader layer
@@ -20717,34 +20713,34 @@ var AdemisFeedback =
 	    function Loader() {
 	        _classCallCheck(this, Loader);
 	
-	        _get(Object.getPrototypeOf(Loader.prototype), 'constructor', this).call(this);
+	        _get(Object.getPrototypeOf(Loader.prototype), "constructor", this).call(this);
 	
 	        this.propTypes = {
-	            label: _react2['default'].PropTypes.string.isRequired
+	            label: _react2["default"].PropTypes.string.isRequired
 	        };
 	    }
 	
 	    _createClass(Loader, [{
-	        key: 'render',
+	        key: "render",
 	        value: function render() {
-	            return _react2['default'].createElement(
-	                'div',
-	                { className: 'ademis-feedback-loader' },
-	                _react2['default'].createElement(
-	                    'div',
-	                    { className: 'ademis-feedback-loader-inner' },
-	                    _react2['default'].createElement(
-	                        'h1',
-	                        { className: 'ademis-feedback-loader-title' },
+	            return _react2["default"].createElement(
+	                "div",
+	                { className: "ademis-feedback-loader" },
+	                _react2["default"].createElement(
+	                    "div",
+	                    { className: "ademis-feedback-loader-inner" },
+	                    _react2["default"].createElement(
+	                        "h1",
+	                        { className: "ademis-feedback-loader-title" },
 	                        this.props.label
 	                    ),
-	                    _react2['default'].createElement(
-	                        'div',
-	                        { className: 'ademis-feedback-loader-slider' },
-	                        _react2['default'].createElement('div', { className: 'ademis-feedback-loader-line' }),
-	                        _react2['default'].createElement('div', { className: 'ademis-feedback-loader-break ademis-feedback-loader-dot1' }),
-	                        _react2['default'].createElement('div', { className: 'ademis-feedback-loader-break ademis-feedback-loader-dot2' }),
-	                        _react2['default'].createElement('div', { className: 'ademis-feedback-loader-break ademis-feedback-loader-dot3' })
+	                    _react2["default"].createElement(
+	                        "div",
+	                        { className: "ademis-feedback-loader-slider" },
+	                        _react2["default"].createElement("div", { className: "ademis-feedback-loader-line" }),
+	                        _react2["default"].createElement("div", { className: "ademis-feedback-loader-break ademis-feedback-loader-dot1" }),
+	                        _react2["default"].createElement("div", { className: "ademis-feedback-loader-break ademis-feedback-loader-dot2" }),
+	                        _react2["default"].createElement("div", { className: "ademis-feedback-loader-break ademis-feedback-loader-dot3" })
 	                    )
 	                )
 	            );
@@ -20752,10 +20748,10 @@ var AdemisFeedback =
 	    }]);
 	
 	    return Loader;
-	})(_react2['default'].Component);
+	})(_react2["default"].Component);
 	
-	exports['default'] = Loader;
-	module.exports = exports['default'];
+	exports["default"] = Loader;
+	module.exports = exports["default"];
 
 /***/ }
 /******/ ]);

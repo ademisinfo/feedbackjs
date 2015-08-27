@@ -1,7 +1,7 @@
 {
-  "name": "CCRI",
+  "name": "ademis-feedback",
   "author": "Titouan Galopin <galopintitouan@gmail.com>",
-  "private": true,
+  "private": false,
   "devDependencies": {
     "babel-core": "^5.8.22",
     "babel-loader": "^5.3.2",
