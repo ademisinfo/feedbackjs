@@ -113,6 +113,12 @@ var AdemisFeedback =
 	            dependencies: {
 	                html2canvas: '//cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js',
 	                fabric: '//cdnjs.cloudflare.com/ajax/libs/fabric.js/1.5.0/fabric.min.js'
+	            },
+	            context: {
+	                browser: true,
+	                plugins: true,
+	                html: true,
+	                url: true
 	            }
 	        };
 	
@@ -20162,7 +20168,14 @@ var AdemisFeedback =
 /***/ function(module, exports) {
 
 	module.exports = {
-		"button": "Signaler un problème"
+		"title": "Signaler",
+		"button": "Signaler un problème",
+		"editor_comment": "Annoter",
+		"editor_hide": "Cacher",
+		"editor_arrow": "Flêche",
+		"editor_help": "Aide",
+		"cancel": "Annuler",
+		"continue": "Continuer"
 	}
 
 /***/ },
@@ -20214,11 +20227,11 @@ var AdemisFeedback =
 	
 	var _ButtonJsx2 = _interopRequireDefault(_ButtonJsx);
 	
-	var _CanvasEditorJsx = __webpack_require__(166);
+	var _editorEditorInterfaceJsx = __webpack_require__(166);
 	
-	var _CanvasEditorJsx2 = _interopRequireDefault(_CanvasEditorJsx);
+	var _editorEditorInterfaceJsx2 = _interopRequireDefault(_editorEditorInterfaceJsx);
 	
-	var _LoaderJsx = __webpack_require__(167);
+	var _LoaderJsx = __webpack_require__(169);
 	
 	var _LoaderJsx2 = _interopRequireDefault(_LoaderJsx);
 	
@@ -20247,14 +20260,14 @@ var AdemisFeedback =
 	
 	        this.state = {
 	            status: 'none',
-	            loading: false,
+	            isLoading: false,
 	            loadingFor: '',
 	            canvas: null
 	        };
 	
 	        this.handleButtonClick = this.handleButtonClick.bind(this);
-	        this.handleCanvasEditingContinue = this.handleCanvasEditingContinue.bind(this);
-	        this.handleCanvasEditingCancel = this.handleCanvasEditingCancel.bind(this);
+	        this.handleEditorSubmit = this.handleEditorSubmit.bind(this);
+	        this.handleEditorCancel = this.handleEditorCancel.bind(this);
 	
 	        setTimeout(function () {
 	            _this.handleButtonClick();
@@ -20274,16 +20287,16 @@ var AdemisFeedback =
 	            });
 	        }
 	    }, {
-	        key: 'handleCanvasEditingContinue',
-	        value: function handleCanvasEditingContinue() {
+	        key: 'handleEditorSubmit',
+	        value: function handleEditorSubmit() {
 	            this.setState({
 	                status: 'none',
 	                canvas: null
 	            });
 	        }
 	    }, {
-	        key: 'handleCanvasEditingCancel',
-	        value: function handleCanvasEditingCancel() {
+	        key: 'handleEditorCancel',
+	        value: function handleEditorCancel() {
 	            this.setState({
 	                status: 'none',
 	                canvas: null
@@ -20299,15 +20312,15 @@ var AdemisFeedback =
 	            }
 	
 	            if (this.state.status == 'editing') {
-	                rendered.push(_react2['default'].createElement(_CanvasEditorJsx2['default'], { canvas: this.state.canvas,
+	                rendered.push(_react2['default'].createElement(_editorEditorInterfaceJsx2['default'], { canvas: this.state.canvas,
 	                    dispatcher: this.props.dispatcher,
 	                    translator: this.props.translator,
 	                    options: this.props.options,
-	                    onContinue: this.handleCanvasEditingContinue,
-	                    onCancel: this.handleCanvasEditingCancel }));
+	                    onSubmit: this.handleEditorSubmit,
+	                    onCancel: this.handleEditorCancel }));
 	            }
 	
-	            if (this.state.status == 'loading') {
+	            if (this.state.isLoading) {
 	                rendered.push(_react2['default'].createElement(_LoaderJsx2['default'], { label: 'Envoi du signalement ...' }));
 	            }
 	
@@ -20500,20 +20513,26 @@ var AdemisFeedback =
 	
 	var _servicesTranslatorJsx2 = _interopRequireDefault(_servicesTranslatorJsx);
 	
+	var _EditorCanvasJsx = __webpack_require__(167);
+	
+	var _EditorCanvasJsx2 = _interopRequireDefault(_EditorCanvasJsx);
+	
 	/**
-	 * Main button in the corner of the website
-	 * This component only render the button and delegate the event to the App component
+	 * Editor interface
+	 * Provide a sidebar for different edition modes, use the
+	 * CanvasRenderer for real edition and the FormWindow for
+	 * details about the problem
 	 *
 	 * @author Titouan Galopin <galopintitouan@gmail.com>
 	 */
 	
-	var CanvasEditor = (function (_React$Component) {
-	    _inherits(CanvasEditor, _React$Component);
+	var EditorInterface = (function (_React$Component) {
+	    _inherits(EditorInterface, _React$Component);
 	
-	    function CanvasEditor() {
-	        _classCallCheck(this, CanvasEditor);
+	    function EditorInterface() {
+	        _classCallCheck(this, EditorInterface);
 	
-	        _get(Object.getPrototypeOf(CanvasEditor.prototype), 'constructor', this).call(this);
+	        _get(Object.getPrototypeOf(EditorInterface.prototype), 'constructor', this).call(this);
 	
 	        this.propTypes = {
 	            canvas: _react2['default'].PropTypes.object.isRequired,
@@ -20525,22 +20544,21 @@ var AdemisFeedback =
 	        };
 	
 	        this.editor = null;
-	        this.width = 0;
-	        this.height = 0;
 	
 	        this.state = {
 	            mode: 'comment',
-	            canvas: null
+	            shapes: []
 	        };
 	
 	        this.handleCommentButtonClick = this.handleCommentButtonClick.bind(this);
 	        this.handleHideButtonClick = this.handleHideButtonClick.bind(this);
 	        this.handleArrowButtonClick = this.handleArrowButtonClick.bind(this);
+	        this.handleHelpButtonClick = this.handleHelpButtonClick.bind(this);
 	        this.handleContinueButtonClick = this.handleContinueButtonClick.bind(this);
 	        this.handleCancelButtonClick = this.handleCancelButtonClick.bind(this);
 	    }
 	
-	    _createClass(CanvasEditor, [{
+	    _createClass(EditorInterface, [{
 	        key: 'componentDidMount',
 	        value: function componentDidMount() {
 	            document.body.style.overflow = 'hidden';
@@ -20566,30 +20584,35 @@ var AdemisFeedback =
 	            this.setState({ mode: 'arrow' });
 	        }
 	    }, {
+	        key: 'handleHelpButtonClick',
+	        value: function handleHelpButtonClick() {
+	            this.setState({ mode: 'help' });
+	        }
+	    }, {
 	        key: 'handleContinueButtonClick',
 	        value: function handleContinueButtonClick() {
-	            this.props.onContinue(this.canvas);
+	            this.props.onContinue();
 	        }
 	    }, {
 	        key: 'handleCancelButtonClick',
 	        value: function handleCancelButtonClick() {
-	            this.props.onCancel(this.canvas);
+	            this.props.onCancel();
 	        }
 	    }, {
 	        key: 'render',
 	        value: function render() {
-	            var editorBackground = { backgroundImage: 'url(' + this.props.canvas.toDataURL() + ')' };
+	            var translator = this.props.translator;
 	
 	            return _react2['default'].createElement(
 	                'div',
-	                { className: 'ademis-feedback-editor', id: 'ademis-feedback-editor', style: editorBackground },
+	                { className: 'ademis-feedback-editor', id: 'ademis-feedback-editor' },
 	                _react2['default'].createElement(
 	                    'div',
 	                    { className: 'ademis-feedback-editor-sidebar' },
 	                    _react2['default'].createElement(
 	                        'h2',
 	                        { className: 'ademis-feedback-editor-title' },
-	                        'Feedback'
+	                        translator.translate('title')
 	                    ),
 	                    _react2['default'].createElement(
 	                        'ul',
@@ -20603,7 +20626,7 @@ var AdemisFeedback =
 	                            _react2['default'].createElement(
 	                                'span',
 	                                null,
-	                                'Comment'
+	                                translator.translate('editor_comment')
 	                            )
 	                        ),
 	                        _react2['default'].createElement(
@@ -20615,7 +20638,7 @@ var AdemisFeedback =
 	                            _react2['default'].createElement(
 	                                'span',
 	                                null,
-	                                'Hide'
+	                                translator.translate('editor_hide')
 	                            )
 	                        ),
 	                        _react2['default'].createElement(
@@ -20627,7 +20650,7 @@ var AdemisFeedback =
 	                            _react2['default'].createElement(
 	                                'span',
 	                                null,
-	                                'Arrow'
+	                                translator.translate('editor_arrow')
 	                            )
 	                        )
 	                    ),
@@ -20636,40 +20659,315 @@ var AdemisFeedback =
 	                        { className: 'ademis-feedback-editor-sidebar-bottom' },
 	                        _react2['default'].createElement(
 	                            'li',
-	                            { onClick: this.handleCancelButtonClick },
-	                            _react2['default'].createElement('i', { className: 'ademis-feedback-icon-cancel' }),
+	                            { onClick: this.handleHelpButtonClick },
+	                            _react2['default'].createElement('i', { className: 'ademis-feedback-icon-help' }),
 	                            _react2['default'].createElement('br', null),
 	                            _react2['default'].createElement(
 	                                'span',
 	                                null,
-	                                'Cancel'
-	                            )
-	                        ),
-	                        _react2['default'].createElement(
-	                            'li',
-	                            { onClick: this.handleContinueButtonClick },
-	                            _react2['default'].createElement('i', { className: 'ademis-feedback-icon-continue' }),
-	                            _react2['default'].createElement('br', null),
-	                            _react2['default'].createElement(
-	                                'span',
-	                                null,
-	                                'Continue'
+	                                translator.translate('editor_help')
 	                            )
 	                        )
 	                    )
-	                )
+	                ),
+	                _react2['default'].createElement(_EditorCanvasJsx2['default'], { background: this.props.canvas.toDataURL(),
+	                    mode: this.state.mode,
+	                    width: this.props.canvas.width,
+	                    height: this.props.canvas.height })
 	            );
 	        }
 	    }]);
 	
-	    return CanvasEditor;
+	    return EditorInterface;
 	})(_react2['default'].Component);
 	
-	exports['default'] = CanvasEditor;
+	exports['default'] = EditorInterface;
 	module.exports = exports['default'];
 
 /***/ },
 /* 167 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/*
+	 * This file is part of the Ademis Feedback library.
+	 *
+	 * Copyright (c) 2015 Titouan Galopin <galopintitouan@gmail.com>
+	 *
+	 * For the full copyright and license information, please view the LICENSE
+	 * file that was distributed with this source code.
+	 */
+	
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	    value: true
+	});
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var _react = __webpack_require__(2);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _utilsFabricJsx = __webpack_require__(168);
+	
+	var _utilsFabricJsx2 = _interopRequireDefault(_utilsFabricJsx);
+	
+	/**
+	 * Editor canvas
+	 * Provide edition core features using Fabric
+	 *
+	 * @author Titouan Galopin <galopintitouan@gmail.com>
+	 */
+	
+	var EditorCanvas = (function (_React$Component) {
+	    _inherits(EditorCanvas, _React$Component);
+	
+	    function EditorCanvas() {
+	        _classCallCheck(this, EditorCanvas);
+	
+	        _get(Object.getPrototypeOf(EditorCanvas.prototype), 'constructor', this).call(this);
+	
+	        this.propTypes = {
+	            background: _react2['default'].PropTypes.string.isRequired,
+	            mode: _react2['default'].PropTypes.string.isRequired,
+	            width: _react2['default'].PropTypes.number.isRequired,
+	            height: _react2['default'].PropTypes.number.isRequired
+	        };
+	
+	        this._original = null;
+	        this._canvas = null;
+	        this._fabric = null;
+	        this._overlay = null;
+	
+	        this._mouse = {
+	            isDraging: false,
+	            initialDragPosition: {
+	                x: 0,
+	                y: 0
+	            }
+	        };
+	
+	        this.handleDragStart = this.handleDragStart.bind(this);
+	        this.handleDragMove = this.handleDragMove.bind(this);
+	        this.handleDragStop = this.handleDragStop.bind(this);
+	    }
+	
+	    _createClass(EditorCanvas, [{
+	        key: 'componentDidMount',
+	        value: function componentDidMount() {
+	            var _this = this;
+	
+	            this._original = this.props.background;
+	            this._canvas = document.getElementById('ademis-feedback-editor-canvas');
+	            this._fabric = _utilsFabricJsx2['default'].newInstanceFromCanvas(this._canvas, this.props.width, this.props.height);
+	            this._overlay = _utilsFabricJsx2['default'].createOverlay(this.props.width, this.props.height);
+	
+	            fabric.Image.fromURL(this.props.background, function (image) {
+	                image.selectable = false;
+	                image.hasControls = false;
+	                image.hasBorders = false;
+	
+	                _this._fabric.add(image);
+	                _this._fabric.add(_this._overlay);
+	
+	                _this._fabric.observe('mouse:down', _this.handleDragStart);
+	                _this._fabric.observe('mouse:move', _this.handleDragMove);
+	                _this._fabric.observe('mouse:up', _this.handleDragStop);
+	            });
+	        }
+	    }, {
+	        key: 'handleDragStart',
+	        value: function handleDragStart(event) {
+	            this._mouse.isDraging = true;
+	
+	            var mouse = this._fabric.getPointer(event.e);
+	            this._mouse.initialDragPosition.x = mouse.x;
+	            this._mouse.initialDragPosition.y = mouse.y;
+	
+	            var square = new fabric.Rect({
+	                width: 0,
+	                height: 0,
+	                left: this._mouse.initialDragPosition.x,
+	                top: this._mouse.initialDragPosition.y,
+	                fill: 'transparent',
+	                selectable: false,
+	                hasControls: false,
+	                hasBorders: false,
+	                stroke: '#37474F',
+	                strokeWidth: 3
+	            });
+	
+	            this._fabric.add(square);
+	            this._fabric.setActiveObject(square);
+	        }
+	    }, {
+	        key: 'handleDragMove',
+	        value: function handleDragMove(event) {
+	            if (!this._mouse.isDraging) {
+	                return;
+	            }
+	
+	            var width = event.e.clientX - this._mouse.initialDragPosition.x;
+	            var height = event.e.clientY - this._mouse.initialDragPosition.y;
+	
+	            if (!width || !height) {
+	                return false;
+	            }
+	
+	            var square = this._fabric.getActiveObject();
+	            square.set('width', width);
+	            square.set('height', height);
+	
+	            this._fabric.bringToFront(square);
+	        }
+	    }, {
+	        key: 'handleDragStop',
+	        value: function handleDragStop(event) {
+	            var _this2 = this;
+	
+	            this._mouse.isDraging = false;
+	
+	            var top = event.e.clientY;
+	            var left = event.e.clientX;
+	
+	            if (top > this._mouse.initialDragPosition.y) {
+	                top = this._mouse.initialDragPosition.y;
+	            }
+	
+	            if (left > this._mouse.initialDragPosition.x) {
+	                left = this._mouse.initialDragPosition.x;
+	            }
+	
+	            var width = Math.abs(event.e.clientX - this._mouse.initialDragPosition.x);
+	            var height = Math.abs(event.e.clientY - this._mouse.initialDragPosition.y);
+	
+	            var croppedData = _utilsFabricJsx2['default'].getCroppedDataUri(this._original, this.props.width, this.props.height, top + 2, // Compensate stroke
+	            left + 2, // Compensate stroke
+	            width, height);
+	
+	            fabric.Image.fromURL(croppedData, function (croppedImage) {
+	                croppedImage.top = top;
+	                croppedImage.left = left;
+	                croppedImage.selectable = false;
+	                croppedImage.hasControls = false;
+	                croppedImage.hasBorders = false;
+	                croppedImage.stroke = '#37474F';
+	                croppedImage.strokeWidth = 3;
+	
+	                _this2._fabric.add(croppedImage);
+	            });
+	        }
+	    }, {
+	        key: 'render',
+	        value: function render() {
+	            return _react2['default'].createElement('canvas', { id: 'ademis-feedback-editor-canvas', className: 'ademis-feedback-editor-canvas',
+	                style: { width: this.props.width, height: this.props.height } });
+	        }
+	    }]);
+	
+	    return EditorCanvas;
+	})(_react2['default'].Component);
+	
+	exports['default'] = EditorCanvas;
+	module.exports = exports['default'];
+
+/***/ },
+/* 168 */
+/***/ function(module, exports) {
+
+	/*
+	 * This file is part of the Ademis Feedback library.
+	 *
+	 * Copyright (c) 2015 Titouan Galopin <galopintitouan@gmail.com>
+	 *
+	 * For the full copyright and license information, please view the LICENSE
+	 * file that was distributed with this source code.
+	 */
+	
+	/**
+	 * Create library specific Fabric objects
+	 *
+	 * @author Titouan Galopin <galopintitouan@gmail.com>
+	 */
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	    value: true
+	});
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	
+	var Fabric = (function () {
+	    function Fabric() {
+	        _classCallCheck(this, Fabric);
+	    }
+	
+	    _createClass(Fabric, null, [{
+	        key: 'newInstanceFromCanvas',
+	        value: function newInstanceFromCanvas(canvas, width, height) {
+	            return new fabric.Canvas(canvas, {
+	                width: width,
+	                height: height,
+	                defaultCursor: 'crosshair',
+	                selection: false
+	            });
+	        }
+	    }, {
+	        key: 'createOverlay',
+	        value: function createOverlay(width, height) {
+	            return new fabric.Rect({
+	                top: 0,
+	                left: 0,
+	                width: width,
+	                height: height,
+	                fill: 'rgba(0, 0, 0, 0.5)',
+	                selectable: false,
+	                hasControls: false,
+	                hasBorders: false
+	            });
+	        }
+	    }, {
+	        key: 'getCroppedDataUri',
+	        value: function getCroppedDataUri(originalData, originalWidth, originalHeight, top, left, width, height) {
+	            var original = new Image();
+	            original.src = originalData;
+	
+	            var originalCanvas = document.createElement('canvas');
+	            originalCanvas.width = originalWidth;
+	            originalCanvas.height = originalHeight;
+	            var originalContext = originalCanvas.getContext('2d');
+	            originalContext.drawImage(original, 0, 0);
+	
+	            var croppedData = originalContext.getImageData(left, top, width, height);
+	
+	            var croppedCanvas = document.createElement('canvas');
+	            croppedCanvas.width = width;
+	            croppedCanvas.height = height;
+	            croppedCanvas.getContext('2d').putImageData(croppedData, 0, 0);
+	
+	            return croppedCanvas.toDataURL('image/png');
+	        }
+	    }]);
+	
+	    return Fabric;
+	})();
+	
+	exports['default'] = Fabric;
+	module.exports = exports['default'];
+
+/***/ },
+/* 169 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*

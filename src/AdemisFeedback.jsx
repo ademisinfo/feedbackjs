@@ -34,6 +34,12 @@ class AdemisFeedback {
             dependencies: {
                 html2canvas: '//cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js',
                 fabric: '//cdnjs.cloudflare.com/ajax/libs/fabric.js/1.5.0/fabric.min.js'
+            },
+            context: {
+                browser: true,
+                plugins: true,
+                html: true,
+                url: true
             }
         };
 

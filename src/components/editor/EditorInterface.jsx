@@ -8,16 +8,19 @@
  */
 
 import React from 'react';
-import EventDispatcher from '../services/EventDispatcher.jsx';
-import Translator from '../services/Translator.jsx';
+import EventDispatcher from '../../services/EventDispatcher.jsx';
+import Translator from '../../services/Translator.jsx';
+import EditorCanvas from './EditorCanvas.jsx';
 
 /**
- * Main button in the corner of the website
- * This component only render the button and delegate the event to the App component
+ * Editor interface
+ * Provide a sidebar for different edition modes, use the
+ * CanvasRenderer for real edition and the FormWindow for
+ * details about the problem
  *
  * @author Titouan Galopin <galopintitouan@gmail.com>
  */
-class CanvasEditor extends React.Component {
+class EditorInterface extends React.Component {
     constructor() {
         super();
 
@@ -31,17 +34,16 @@ class CanvasEditor extends React.Component {
         };
 
         this.editor = null;
-        this.width = 0;
-        this.height = 0;
 
         this.state = {
             mode: 'comment',
-            canvas: null
+            shapes: []
         };
 
         this.handleCommentButtonClick = this.handleCommentButtonClick.bind(this);
         this.handleHideButtonClick = this.handleHideButtonClick.bind(this);
         this.handleArrowButtonClick = this.handleArrowButtonClick.bind(this);
+        this.handleHelpButtonClick = this.handleHelpButtonClick.bind(this);
         this.handleContinueButtonClick = this.handleContinueButtonClick.bind(this);
         this.handleCancelButtonClick = this.handleCancelButtonClick.bind(this);
     }
@@ -66,52 +68,59 @@ class CanvasEditor extends React.Component {
         this.setState({ mode: 'arrow' });
     }
 
+    handleHelpButtonClick() {
+        this.setState({ mode: 'help' });
+    }
+
     handleContinueButtonClick() {
-        this.props.onContinue(this.canvas);
+        this.props.onContinue();
     }
 
     handleCancelButtonClick() {
-        this.props.onCancel(this.canvas);
+        this.props.onCancel();
     }
 
     render() {
-        let editorBackground = { backgroundImage: 'url(' + this.props.canvas.toDataURL() + ')' };
+        let translator = this.props.translator;
 
         return (
-            <div className="ademis-feedback-editor" id="ademis-feedback-editor" style={editorBackground}>
+            <div className="ademis-feedback-editor" id="ademis-feedback-editor">
                 <div className="ademis-feedback-editor-sidebar">
-                    <h2 className="ademis-feedback-editor-title">Feedback</h2>
+                    <h2 className="ademis-feedback-editor-title">
+                        {translator.translate('title')}
+                    </h2>
                     <ul>
                         <li className={this.state.mode == 'comment' ? 'ademis-feedback-editor-sidebar-active' : ''}
                             onClick={this.handleCommentButtonClick}>
                             <i className="ademis-feedback-icon-comment"></i><br />
-                            <span>Comment</span>
+                            <span>{translator.translate('editor_comment')}</span>
                         </li>
                         <li className={this.state.mode == 'hide' ? 'ademis-feedback-editor-sidebar-active' : ''}
                             onClick={this.handleHideButtonClick}>
                             <i className="ademis-feedback-icon-hide"></i><br />
-                            <span>Hide</span>
+                            <span>{translator.translate('editor_hide')}</span>
                         </li>
                         <li className={this.state.mode == 'arrow' ? 'ademis-feedback-editor-sidebar-active' : ''}
                             onClick={this.handleArrowButtonClick}>
                             <i className="ademis-feedback-icon-arrow"></i><br />
-                            <span>Arrow</span>
+                            <span>{translator.translate('editor_arrow')}</span>
                         </li>
                     </ul>
                     <ul className="ademis-feedback-editor-sidebar-bottom">
-                        <li onClick={this.handleCancelButtonClick}>
-                            <i className="ademis-feedback-icon-cancel"></i><br />
-                            <span>Cancel</span>
-                        </li>
-                        <li onClick={this.handleContinueButtonClick}>
-                            <i className="ademis-feedback-icon-continue"></i><br />
-                            <span>Continue</span>
+                        <li onClick={this.handleHelpButtonClick}>
+                            <i className="ademis-feedback-icon-help"></i><br />
+                            <span>{translator.translate('editor_help')}</span>
                         </li>
                     </ul>
                 </div>
+
+                <EditorCanvas background={this.props.canvas.toDataURL()}
+                              mode={this.state.mode}
+                              width={this.props.canvas.width}
+                              height={this.props.canvas.height} />
             </div>
         );
     }
 }
 
-export default CanvasEditor;
+export default EditorInterface;

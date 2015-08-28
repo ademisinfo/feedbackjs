@@ -12,7 +12,7 @@ import EventDispatcher from '../services/EventDispatcher.jsx';
 import Translator from '../services/Translator.jsx';
 import ScreenshotBuilder from '../utils/ScreenshotBuilder.jsx';
 import Button from './Button.jsx';
-import CanvasEditor from './CanvasEditor.jsx';
+import EditorInterface from './editor/EditorInterface.jsx';
 import Loader from './Loader.jsx';
 
 /**
@@ -33,14 +33,14 @@ class App extends React.Component {
 
         this.state = {
             status: 'none',
-            loading: false,
+            isLoading: false,
             loadingFor: '',
             canvas: null
         };
 
         this.handleButtonClick = this.handleButtonClick.bind(this);
-        this.handleCanvasEditingContinue = this.handleCanvasEditingContinue.bind(this);
-        this.handleCanvasEditingCancel = this.handleCanvasEditingCancel.bind(this);
+        this.handleEditorSubmit = this.handleEditorSubmit.bind(this);
+        this.handleEditorCancel = this.handleEditorCancel.bind(this);
 
         setTimeout(() => { this.handleButtonClick(); }, 500);
     }
@@ -54,14 +54,14 @@ class App extends React.Component {
         });
     }
 
-    handleCanvasEditingContinue() {
+    handleEditorSubmit() {
         this.setState({
             status: 'none',
             canvas: null
         });
     }
 
-    handleCanvasEditingCancel() {
+    handleEditorCancel() {
         this.setState({
             status: 'none',
             canvas: null
@@ -76,15 +76,15 @@ class App extends React.Component {
         }
 
         if (this.state.status == 'editing') {
-            rendered.push(<CanvasEditor canvas={this.state.canvas}
-                                        dispatcher={this.props.dispatcher}
-                                        translator={this.props.translator}
-                                        options={this.props.options}
-                                        onContinue={this.handleCanvasEditingContinue}
-                                        onCancel={this.handleCanvasEditingCancel} />);
+            rendered.push(<EditorInterface canvas={this.state.canvas}
+                                           dispatcher={this.props.dispatcher}
+                                           translator={this.props.translator}
+                                           options={this.props.options}
+                                           onSubmit={this.handleEditorSubmit}
+                                           onCancel={this.handleEditorCancel} />);
         }
 
-        if (this.state.status == 'loading') {
+        if (this.state.isLoading) {
             rendered.push(<Loader label="Envoi du signalement ..." />);
         }
 

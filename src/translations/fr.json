@@ -1,3 +1,10 @@
 {
-    "button": "Signaler un problème"
+    "title": "Signaler",
+    "button": "Signaler un problème",
+    "editor_comment": "Annoter",
+    "editor_hide": "Cacher",
+    "editor_arrow": "Flêche",
+    "editor_help": "Aide",
+    "cancel": "Annuler",
+    "continue": "Continuer"
 }
