@@ -101,7 +101,7 @@ class EditorCanvas extends React.Component {
             return false;
         }
 
-        var square = this._fabric.getActiveObject();
+        let square = this._fabric.getActiveObject();
         square.set('width', width);
         square.set('height', height);
 
@@ -110,6 +110,9 @@ class EditorCanvas extends React.Component {
 
     handleDragStop(event) {
         this._mouse.isDraging = false;
+
+        // Remove square
+        this._fabric.remove(this._fabric.getActiveObject());
 
         let top = event.e.clientY;
         let left = event.e.clientX;
@@ -125,27 +128,44 @@ class EditorCanvas extends React.Component {
         let width = Math.abs(event.e.clientX - this._mouse.initialDragPosition.x);
         let height = Math.abs(event.e.clientY - this._mouse.initialDragPosition.y);
 
-        let croppedData = Fabric.getCroppedDataUri(
-            this._original,
-            this.props.width,
-            this.props.height,
-            top + 2, // Compensate stroke
-            left + 2, // Compensate stroke
-            width,
-            height
-        );
+        if (this.props.mode == 'highlight') {
+            let croppedData = Fabric.getCroppedDataUri(
+                this._original,
+                this.props.width,
+                this.props.height,
+                top + 2, // Compensate stroke
+                left + 2, // Compensate stroke
+                width,
+                height
+            );
 
-        fabric.Image.fromURL(croppedData, (croppedImage) => {
-            croppedImage.top = top;
-            croppedImage.left = left;
-            croppedImage.selectable = false;
-            croppedImage.hasControls = false;
-            croppedImage.hasBorders = false;
-            croppedImage.stroke = '#37474F';
-            croppedImage.strokeWidth = 3;
+            fabric.Image.fromURL(croppedData, (croppedImage) => {
+                croppedImage.top = top;
+                croppedImage.left = left;
+                croppedImage.selectable = false;
+                croppedImage.hasControls = false;
+                croppedImage.hasBorders = false;
+                croppedImage.stroke = '#37474F';
+                croppedImage.strokeWidth = 3;
 
-            this._fabric.add(croppedImage);
-        });
+                this._fabric.add(croppedImage);
+            });
+        }
+
+        if (this.props.mode == 'hide') {
+            this._fabric.add(new fabric.Rect({
+                top: top,
+                left: left,
+                width: width,
+                height: height,
+                fill: '#37474F',
+                selectable: false,
+                hasControls: false,
+                hasBorders: false,
+                stroke: '#37474F',
+                strokeWidth: 3
+            }));
+        }
     }
 
     render() {

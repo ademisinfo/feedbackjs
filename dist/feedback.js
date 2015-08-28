@@ -20836,6 +20836,9 @@ var AdemisFeedback =
 	
 	            this._mouse.isDraging = false;
 	
+	            // Remove square
+	            this._fabric.remove(this._fabric.getActiveObject());
+	
 	            var top = event.e.clientY;
 	            var left = event.e.clientX;
 	
@@ -20850,21 +20853,38 @@ var AdemisFeedback =
 	            var width = Math.abs(event.e.clientX - this._mouse.initialDragPosition.x);
 	            var height = Math.abs(event.e.clientY - this._mouse.initialDragPosition.y);
 	
-	            var croppedData = _utilsFabricJsx2['default'].getCroppedDataUri(this._original, this.props.width, this.props.height, top + 2, // Compensate stroke
-	            left + 2, // Compensate stroke
-	            width, height);
+	            if (this.props.mode == 'highlight') {
+	                var croppedData = _utilsFabricJsx2['default'].getCroppedDataUri(this._original, this.props.width, this.props.height, top + 2, // Compensate stroke
+	                left + 2, // Compensate stroke
+	                width, height);
 	
-	            fabric.Image.fromURL(croppedData, function (croppedImage) {
-	                croppedImage.top = top;
-	                croppedImage.left = left;
-	                croppedImage.selectable = false;
-	                croppedImage.hasControls = false;
-	                croppedImage.hasBorders = false;
-	                croppedImage.stroke = '#37474F';
-	                croppedImage.strokeWidth = 3;
+	                fabric.Image.fromURL(croppedData, function (croppedImage) {
+	                    croppedImage.top = top;
+	                    croppedImage.left = left;
+	                    croppedImage.selectable = false;
+	                    croppedImage.hasControls = false;
+	                    croppedImage.hasBorders = false;
+	                    croppedImage.stroke = '#37474F';
+	                    croppedImage.strokeWidth = 3;
 	
-	                _this2._fabric.add(croppedImage);
-	            });
+	                    _this2._fabric.add(croppedImage);
+	                });
+	            }
+	
+	            if (this.props.mode == 'hide') {
+	                this._fabric.add(new fabric.Rect({
+	                    top: top,
+	                    left: left,
+	                    width: width,
+	                    height: height,
+	                    fill: '#37474F',
+	                    selectable: false,
+	                    hasControls: false,
+	                    hasBorders: false,
+	                    stroke: '#37474F',
+	                    strokeWidth: 3
+	                }));
+	            }
 	        }
 	    }, {
 	        key: 'render',
