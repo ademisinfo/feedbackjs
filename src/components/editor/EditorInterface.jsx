@@ -36,11 +36,11 @@ class EditorInterface extends React.Component {
         this.editor = null;
 
         this.state = {
-            mode: 'comment',
+            mode: 'highlight',
             shapes: []
         };
 
-        this.handleCommentButtonClick = this.handleCommentButtonClick.bind(this);
+        this.handleHighlightButtonClick = this.handleHighlightButtonClick.bind(this);
         this.handleHideButtonClick = this.handleHideButtonClick.bind(this);
         this.handleArrowButtonClick = this.handleArrowButtonClick.bind(this);
         this.handleHelpButtonClick = this.handleHelpButtonClick.bind(this);
@@ -56,8 +56,8 @@ class EditorInterface extends React.Component {
         document.body.style.overflow = 'auto';
     }
 
-    handleCommentButtonClick() {
-        this.setState({ mode: 'comment' });
+    handleHighlightButtonClick() {
+        this.setState({ mode: 'highlight' });
     }
 
     handleHideButtonClick() {
@@ -90,10 +90,10 @@ class EditorInterface extends React.Component {
                         {translator.translate('title')}
                     </h2>
                     <ul>
-                        <li className={this.state.mode == 'comment' ? 'ademis-feedback-editor-sidebar-active' : ''}
-                            onClick={this.handleCommentButtonClick}>
-                            <i className="ademis-feedback-icon-comment"></i><br />
-                            <span>{translator.translate('editor_comment')}</span>
+                        <li className={this.state.mode == 'highlight' ? 'ademis-feedback-editor-sidebar-active' : ''}
+                            onClick={this.handleHighlightButtonClick}>
+                            <i className="ademis-feedback-icon-highlight"></i><br />
+                            <span>{translator.translate('editor_highlight')}</span>
                         </li>
                         <li className={this.state.mode == 'hide' ? 'ademis-feedback-editor-sidebar-active' : ''}
                             onClick={this.handleHideButtonClick}>

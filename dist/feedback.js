@@ -20170,7 +20170,7 @@ var AdemisFeedback =
 	module.exports = {
 		"title": "Signaler",
 		"button": "Signaler un problème",
-		"editor_comment": "Annoter",
+		"editor_highlight": "Mettre en avant",
 		"editor_hide": "Cacher",
 		"editor_arrow": "Flêche",
 		"editor_help": "Aide",
@@ -20546,11 +20546,11 @@ var AdemisFeedback =
 	        this.editor = null;
 	
 	        this.state = {
-	            mode: 'comment',
+	            mode: 'highlight',
 	            shapes: []
 	        };
 	
-	        this.handleCommentButtonClick = this.handleCommentButtonClick.bind(this);
+	        this.handleHighlightButtonClick = this.handleHighlightButtonClick.bind(this);
 	        this.handleHideButtonClick = this.handleHideButtonClick.bind(this);
 	        this.handleArrowButtonClick = this.handleArrowButtonClick.bind(this);
 	        this.handleHelpButtonClick = this.handleHelpButtonClick.bind(this);
@@ -20569,9 +20569,9 @@ var AdemisFeedback =
 	            document.body.style.overflow = 'auto';
 	        }
 	    }, {
-	        key: 'handleCommentButtonClick',
-	        value: function handleCommentButtonClick() {
-	            this.setState({ mode: 'comment' });
+	        key: 'handleHighlightButtonClick',
+	        value: function handleHighlightButtonClick() {
+	            this.setState({ mode: 'highlight' });
 	        }
 	    }, {
 	        key: 'handleHideButtonClick',
@@ -20619,14 +20619,14 @@ var AdemisFeedback =
 	                        null,
 	                        _react2['default'].createElement(
 	                            'li',
-	                            { className: this.state.mode == 'comment' ? 'ademis-feedback-editor-sidebar-active' : '',
-	                                onClick: this.handleCommentButtonClick },
-	                            _react2['default'].createElement('i', { className: 'ademis-feedback-icon-comment' }),
+	                            { className: this.state.mode == 'highlight' ? 'ademis-feedback-editor-sidebar-active' : '',
+	                                onClick: this.handleHighlightButtonClick },
+	                            _react2['default'].createElement('i', { className: 'ademis-feedback-icon-highlight' }),
 	                            _react2['default'].createElement('br', null),
 	                            _react2['default'].createElement(
 	                                'span',
 	                                null,
-	                                translator.translate('editor_comment')
+	                                translator.translate('editor_highlight')
 	                            )
 	                        ),
 	                        _react2['default'].createElement(
