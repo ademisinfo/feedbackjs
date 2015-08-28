@@ -12,7 +12,7 @@
  *
  * @author Titouan Galopin <galopintitouan@gmail.com>
  */
-class ScreenshotBuilder {
+export default class ScreenshotBuilder {
     static createScreenshot(callback) {
         let button = document.getElementById('ademis-feedback-button');
         button.style.display = 'none';
@@ -23,5 +23,3 @@ class ScreenshotBuilder {
         } });
     }
 }
-
-export default ScreenshotBuilder;

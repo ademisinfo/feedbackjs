@@ -19,7 +19,7 @@ import App from './components/App.jsx';
  *
  * @author Titouan Galopin <galopintitouan@gmail.com>
  */
-class AdemisFeedback {
+export default class AdemisFeedback {
     constructor(options) {
         // Check <canvas> support
         let canvas = document.createElement('canvas');
@@ -94,5 +94,3 @@ class AdemisFeedback {
         return stylesheet;
     }
 }
-
-export default AdemisFeedback;

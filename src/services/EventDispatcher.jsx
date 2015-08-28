@@ -16,7 +16,7 @@ import Errors from '../utils/Errors.jsx';
  *
  * @author Titouan Galopin <galopintitouan@gmail.com>
  */
-class EventDispatcher {
+export default class EventDispatcher {
     constructor() {
         this._listeners = {
             'button:clicked': [],
@@ -47,5 +47,3 @@ class EventDispatcher {
         return payload;
     }
 }
-
-export default EventDispatcher;

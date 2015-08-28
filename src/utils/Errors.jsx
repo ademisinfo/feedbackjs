@@ -12,7 +12,7 @@
  *
  * @author Titouan Galopin <galopintitouan@gmail.com>
  */
-class Errors {
+export default class Errors {
 
     /*
      * General
@@ -54,5 +54,3 @@ class Errors {
     }
 
 }
-
-export default Errors;

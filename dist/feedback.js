@@ -20682,6 +20682,7 @@ var AdemisFeedback =
 	})(_react2['default'].Component);
 	
 	exports['default'] = EditorInterface;
+	exports['default'] = EditorInterface;
 	module.exports = exports['default'];
 
 /***/ },

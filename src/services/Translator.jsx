@@ -15,7 +15,7 @@ import Errors from '../utils/Errors.jsx';
  *
  * @author Titouan Galopin <galopintitouan@gmail.com>
  */
-class Translator {
+export default class Translator {
     constructor(locale) {
         let availableLocales = [ 'fr' ];
 
@@ -35,5 +35,3 @@ class Translator {
         return this._translations[key];
     }
 }
-
-export default Translator;

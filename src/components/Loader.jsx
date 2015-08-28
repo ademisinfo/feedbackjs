@@ -14,7 +14,7 @@ import React from 'react';
  *
  * @author Titouan Galopin <galopintitouan@gmail.com>
  */
-class Loader extends React.Component {
+export default class Loader extends React.Component {
     constructor() {
         super();
 
@@ -41,5 +41,3 @@ class Loader extends React.Component {
         );
     }
 }
-
-export default Loader;

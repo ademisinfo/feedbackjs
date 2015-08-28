@@ -12,7 +12,7 @@
  *
  * @author Titouan Galopin <galopintitouan@gmail.com>
  */
-class Fabric {
+export default class Fabric {
 
     static newInstanceFromCanvas(canvas, width, height) {
         return new fabric.Canvas(canvas, {
@@ -57,5 +57,3 @@ class Fabric {
     }
 
 }
-
-export default Fabric;

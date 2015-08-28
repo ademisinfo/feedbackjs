@@ -20,7 +20,7 @@ import EditorCanvas from './EditorCanvas.jsx';
  *
  * @author Titouan Galopin <galopintitouan@gmail.com>
  */
-class EditorInterface extends React.Component {
+export default class EditorInterface extends React.Component {
     constructor() {
         super();
 

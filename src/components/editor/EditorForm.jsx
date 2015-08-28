@@ -16,7 +16,7 @@ import Translator from '../services/Translator.jsx';
  *
  * @author Titouan Galopin <galopintitouan@gmail.com>
  */
-class Button extends React.Component {
+export default class Button extends React.Component {
     constructor() {
         super();
 
@@ -40,5 +40,3 @@ class Button extends React.Component {
         );
     }
 }
-
-export default Button;

@@ -16,7 +16,7 @@ import Fabric from '../../utils/Fabric.jsx';
  *
  * @author Titouan Galopin <galopintitouan@gmail.com>
  */
-class EditorCanvas extends React.Component {
+export default class EditorCanvas extends React.Component {
     constructor() {
         super();
 
@@ -175,5 +175,3 @@ class EditorCanvas extends React.Component {
         );
     }
 }
-
-export default EditorCanvas;
