@@ -86,7 +86,11 @@ var AdemisFeedback =
 	
 	var _utilsErrorsJsx2 = _interopRequireDefault(_utilsErrorsJsx);
 	
-	var _componentsAppJsx = __webpack_require__(163);
+	var _utilsContentLoadedJsx = __webpack_require__(163);
+	
+	var _utilsContentLoadedJsx2 = _interopRequireDefault(_utilsContentLoadedJsx);
+	
+	var _componentsAppJsx = __webpack_require__(164);
 	
 	var _componentsAppJsx2 = _interopRequireDefault(_componentsAppJsx);
 	
@@ -138,20 +142,24 @@ var AdemisFeedback =
 	    }, {
 	        key: 'start',
 	        value: function start() {
-	            // Load dependencies
-	            document.head.appendChild(this._createScript(this._options.dependencies.html2canvas));
-	            document.head.appendChild(this._createScript(this._options.dependencies.fabric));
+	            var _this = this;
 	
-	            // Load theme
-	            document.head.appendChild(this._createStylesheet(this._options.theme));
+	            _utilsContentLoadedJsx2['default'].onDomReady(function () {
+	                // Load dependencies
+	                document.head.appendChild(_this._createScript(_this._options.dependencies.html2canvas));
+	                document.head.appendChild(_this._createScript(_this._options.dependencies.fabric));
 	
-	            // Create HTML container
-	            var container = document.createElement('div');
-	            container.id = 'ademis-feedback';
+	                // Load theme
+	                document.head.appendChild(_this._createStylesheet(_this._options.theme));
 	
-	            document.body.appendChild(container);
+	                // Create HTML container
+	                var container = document.createElement('div');
+	                container.id = 'ademis-feedback';
 	
-	            _react2['default'].render(_react2['default'].createElement(_componentsAppJsx2['default'], { dispatcher: this._dispatcher, translator: this._translator, options: this._options }), container);
+	                document.body.appendChild(container);
+	
+	                _react2['default'].render(_react2['default'].createElement(_componentsAppJsx2['default'], { dispatcher: _this._dispatcher, translator: _this._translator, options: _this._options }), container);
+	            });
 	        }
 	    }, {
 	        key: '_createScript',
@@ -20180,6 +20188,92 @@ var AdemisFeedback =
 
 /***/ },
 /* 163 */
+/***/ function(module, exports) {
+
+	/*
+	 * This file is part of the Ademis Feedback library.
+	 *
+	 * Copyright (c) 2015 Titouan Galopin <galopintitouan@gmail.com>
+	 *
+	 * For the full copyright and license information, please view the LICENSE
+	 * file that was distributed with this source code.
+	 */
+	
+	/**
+	 * Detect when the DOM is loaded and ready.
+	 *
+	 * @author Diego Perini (diego.perini at gmail.com)
+	 * @see https://github.com/dperini/ContentLoaded
+	 */
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	    value: true
+	});
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	
+	var ContentLoaded = (function () {
+	    function ContentLoaded() {
+	        _classCallCheck(this, ContentLoaded);
+	    }
+	
+	    _createClass(ContentLoaded, null, [{
+	        key: 'onDomReady',
+	
+	        /*
+	         * Execute a given callback when the DOM is ready
+	         */
+	        value: function onDomReady(callback) {
+	            var done = false,
+	                top = true,
+	                doc = window.document,
+	                root = doc.documentElement,
+	                modern = doc.addEventListener,
+	                add = modern ? 'addEventListener' : 'attachEvent',
+	                rem = modern ? 'removeEventListener' : 'detachEvent',
+	                pre = modern ? '' : 'on',
+	                init = function init(e) {
+	                if (e.type == 'readystatechange' && doc.readyState != 'complete') return;
+	                (e.type == 'load' ? window : doc)[rem](pre + e.type, init, false);
+	                if (!done && (done = true)) callback.call(window, e.type || e);
+	            },
+	                poll = function poll() {
+	                try {
+	                    root.doScroll('left');
+	                } catch (e) {
+	                    setTimeout(poll, 50);return;
+	                }
+	                init('poll');
+	            };
+	
+	            if (doc.readyState == 'complete') {
+	                callback.call(window, 'lazy');
+	            } else {
+	                if (!modern && root.doScroll) {
+	                    try {
+	                        top = !window.frameElement;
+	                    } catch (e) {}
+	                    if (top) poll();
+	                }
+	
+	                doc[add](pre + 'DOMContentLoaded', init, false);
+	                doc[add](pre + 'readystatechange', init, false);
+	                window[add](pre + 'load', init, false);
+	            }
+	        }
+	    }]);
+	
+	    return ContentLoaded;
+	})();
+	
+	exports['default'] = ContentLoaded;
+	module.exports = exports['default'];
+
+/***/ },
+/* 164 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*
@@ -20219,19 +20313,19 @@ var AdemisFeedback =
 	
 	var _servicesTranslatorJsx2 = _interopRequireDefault(_servicesTranslatorJsx);
 	
-	var _utilsScreenshotBuilderJsx = __webpack_require__(164);
+	var _utilsScreenshotBuilderJsx = __webpack_require__(165);
 	
 	var _utilsScreenshotBuilderJsx2 = _interopRequireDefault(_utilsScreenshotBuilderJsx);
 	
-	var _ButtonJsx = __webpack_require__(165);
+	var _ButtonJsx = __webpack_require__(166);
 	
 	var _ButtonJsx2 = _interopRequireDefault(_ButtonJsx);
 	
-	var _editorEditorInterfaceJsx = __webpack_require__(166);
+	var _editorEditorInterfaceJsx = __webpack_require__(167);
 	
 	var _editorEditorInterfaceJsx2 = _interopRequireDefault(_editorEditorInterfaceJsx);
 	
-	var _LoaderJsx = __webpack_require__(169);
+	var _LoaderJsx = __webpack_require__(170);
 	
 	var _LoaderJsx2 = _interopRequireDefault(_LoaderJsx);
 	
@@ -20339,7 +20433,7 @@ var AdemisFeedback =
 	module.exports = exports['default'];
 
 /***/ },
-/* 164 */
+/* 165 */
 /***/ function(module, exports) {
 
 	/*
@@ -20391,7 +20485,7 @@ var AdemisFeedback =
 	module.exports = exports['default'];
 
 /***/ },
-/* 165 */
+/* 166 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*
@@ -20473,7 +20567,7 @@ var AdemisFeedback =
 	module.exports = exports['default'];
 
 /***/ },
-/* 166 */
+/* 167 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*
@@ -20513,7 +20607,7 @@ var AdemisFeedback =
 	
 	var _servicesTranslatorJsx2 = _interopRequireDefault(_servicesTranslatorJsx);
 	
-	var _EditorCanvasJsx = __webpack_require__(167);
+	var _EditorCanvasJsx = __webpack_require__(168);
 	
 	var _EditorCanvasJsx2 = _interopRequireDefault(_EditorCanvasJsx);
 	
@@ -20686,7 +20780,7 @@ var AdemisFeedback =
 	module.exports = exports['default'];
 
 /***/ },
-/* 167 */
+/* 168 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*
@@ -20718,7 +20812,7 @@ var AdemisFeedback =
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _utilsFabricJsx = __webpack_require__(168);
+	var _utilsFabricJsx = __webpack_require__(169);
 	
 	var _utilsFabricJsx2 = _interopRequireDefault(_utilsFabricJsx);
 	
@@ -20902,7 +20996,7 @@ var AdemisFeedback =
 	module.exports = exports['default'];
 
 /***/ },
-/* 168 */
+/* 169 */
 /***/ function(module, exports) {
 
 	/*
@@ -20988,7 +21082,7 @@ var AdemisFeedback =
 	module.exports = exports['default'];
 
 /***/ },
-/* 169 */
+/* 170 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*

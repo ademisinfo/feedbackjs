@@ -12,6 +12,7 @@ import React from 'react';
 import EventDispatcher from './services/EventDispatcher.jsx';
 import Translator from './services/Translator.jsx';
 import Errors from './utils/Errors.jsx';
+import ContentLoaded from './utils/ContentLoaded.jsx';
 import App from './components/App.jsx';
 
 /**
@@ -56,23 +57,25 @@ export default class AdemisFeedback {
     }
 
     start() {
-        // Load dependencies
-        document.head.appendChild(this._createScript(this._options.dependencies.html2canvas));
-        document.head.appendChild(this._createScript(this._options.dependencies.fabric));
+        ContentLoaded.onDomReady(() => {
+            // Load dependencies
+            document.head.appendChild(this._createScript(this._options.dependencies.html2canvas));
+            document.head.appendChild(this._createScript(this._options.dependencies.fabric));
 
-        // Load theme
-        document.head.appendChild(this._createStylesheet(this._options.theme));
+            // Load theme
+            document.head.appendChild(this._createStylesheet(this._options.theme));
 
-        // Create HTML container
-        let container = document.createElement('div');
-        container.id = 'ademis-feedback';
+            // Create HTML container
+            let container = document.createElement('div');
+            container.id = 'ademis-feedback';
 
-        document.body.appendChild(container);
+            document.body.appendChild(container);
 
-        React.render(
-            <App dispatcher={this._dispatcher} translator={this._translator} options={this._options} />,
-            container
-        );
+            React.render(
+                <App dispatcher={this._dispatcher} translator={this._translator} options={this._options} />,
+                container
+            );
+        });
     }
 
     _createScript(src) {
