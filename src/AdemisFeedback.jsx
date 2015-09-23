@@ -57,14 +57,14 @@ export default class AdemisFeedback {
     }
 
     start() {
+        // Load dependencies
+        document.head.appendChild(this._createScript(this._options.dependencies.html2canvas));
+        document.head.appendChild(this._createScript(this._options.dependencies.fabric));
+
+        // Load theme
+        document.head.appendChild(this._createStylesheet(this._options.theme));
+        
         ContentLoaded.onDomReady(() => {
-            // Load dependencies
-            document.head.appendChild(this._createScript(this._options.dependencies.html2canvas));
-            document.head.appendChild(this._createScript(this._options.dependencies.fabric));
-
-            // Load theme
-            document.head.appendChild(this._createStylesheet(this._options.theme));
-
             // Create HTML container
             let container = document.createElement('div');
             container.id = 'ademis-feedback';

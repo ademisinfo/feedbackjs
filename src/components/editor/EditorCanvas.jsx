@@ -31,6 +31,7 @@ export default class EditorCanvas extends React.Component {
         this._canvas = null;
         this._fabric = null;
         this._overlay = null;
+        this._arrow = null;
 
         this._mouse = {
             isDraging: false,
@@ -72,21 +73,38 @@ export default class EditorCanvas extends React.Component {
         this._mouse.initialDragPosition.x = mouse.x;
         this._mouse.initialDragPosition.y = mouse.y;
 
-        let square = new fabric.Rect({
-            width: 0,
-            height: 0,
-            left: this._mouse.initialDragPosition.x,
-            top: this._mouse.initialDragPosition.y,
-            fill: 'transparent',
-            selectable: false,
-            hasControls: false,
-            hasBorders: false,
-            stroke: '#37474F',
-            strokeWidth: 3
-        });
+        if (this.props.mode == 'highlight' || this.props.mode == 'hide') {
+            let square = new fabric.Rect({
+                width: 0,
+                height: 0,
+                left: mouse.x,
+                top: mouse.y,
+                fill: 'transparent',
+                selectable: false,
+                hasControls: false,
+                hasBorders: false,
+                stroke: '#37474F',
+                strokeWidth: 3
+            });
 
-        this._fabric.add(square);
-        this._fabric.setActiveObject(square);
+            this._fabric.add(square);
+            this._fabric.setActiveObject(square);
+        }
+
+        if (this.props.mode == 'arrow') {
+            let line = new fabric.Line([mouse.x, mouse.y, mouse.x, mouse.y], {
+                selectable: false,
+                hasControls: false,
+                hasBorders: false,
+                stroke: '#FFD740',
+                strokeWidth: 5,
+                originX: 'center',
+                originY: 'center'
+            });
+
+            this._fabric.add(line);
+            this._fabric.setActiveObject(line);
+        }
     }
 
     handleDragMove(event) {
@@ -101,18 +119,50 @@ export default class EditorCanvas extends React.Component {
             return false;
         }
 
-        let square = this._fabric.getActiveObject();
-        square.set('width', width);
-        square.set('height', height);
+        if (this.props.mode == 'highlight' || this.props.mode == 'hide') {
+            let square = this._fabric.getActiveObject();
 
-        this._fabric.bringToFront(square);
+            square.set('width', width);
+            square.set('height', height);
+
+            this._fabric.bringToFront(square);
+        }
+
+        if (this.props.mode == 'arrow') {
+            if (this._arrow) {
+                this._fabric.remove(this._arrow);
+                this._arrow = null;
+            }
+
+            let line = this._fabric.getActiveObject();
+
+            line.set('x2', event.e.clientX);
+            line.set('y2', event.e.clientY);
+
+            this._arrow = Fabric.createArrowOnLine([
+                this._mouse.initialDragPosition.x,
+                this._mouse.initialDragPosition.y,
+                event.e.clientX,
+                event.e.clientY
+            ]);
+
+            this._fabric.add(this._arrow);
+
+            this._fabric.bringToFront(line);
+            this._fabric.bringToFront(this._arrow);
+        }
     }
 
     handleDragStop(event) {
         this._mouse.isDraging = false;
 
-        // Remove square
+        // Remove temporary
         this._fabric.remove(this._fabric.getActiveObject());
+
+        if (this._arrow) {
+            this._fabric.remove(this._arrow);
+            this._arrow = null;
+        }
 
         let top = event.e.clientY;
         let left = event.e.clientX;
@@ -165,6 +215,27 @@ export default class EditorCanvas extends React.Component {
                 stroke: '#37474F',
                 strokeWidth: 3
             }));
+        }
+
+        if (this.props.mode == 'arrow') {
+            let points = [
+                this._mouse.initialDragPosition.x,
+                this._mouse.initialDragPosition.y,
+                event.e.clientX,
+                event.e.clientY
+            ];
+
+            this._fabric.add(new fabric.Line(points, {
+                selectable: false,
+                hasControls: false,
+                hasBorders: false,
+                stroke: '#FFD740',
+                strokeWidth: 5,
+                originX: 'center',
+                originY: 'center'
+            }));
+
+            this._fabric.add(Fabric.createArrowOnLine(points));
         }
     }
 

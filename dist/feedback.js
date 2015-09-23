@@ -144,14 +144,14 @@ var AdemisFeedback =
 	        value: function start() {
 	            var _this = this;
 	
+	            // Load dependencies
+	            document.head.appendChild(this._createScript(this._options.dependencies.html2canvas));
+	            document.head.appendChild(this._createScript(this._options.dependencies.fabric));
+	
+	            // Load theme
+	            document.head.appendChild(this._createStylesheet(this._options.theme));
+	
 	            _utilsContentLoadedJsx2['default'].onDomReady(function () {
-	                // Load dependencies
-	                document.head.appendChild(_this._createScript(_this._options.dependencies.html2canvas));
-	                document.head.appendChild(_this._createScript(_this._options.dependencies.fabric));
-	
-	                // Load theme
-	                document.head.appendChild(_this._createStylesheet(_this._options.theme));
-	
 	                // Create HTML container
 	                var container = document.createElement('div');
 	                container.id = 'ademis-feedback';
@@ -20640,7 +20640,7 @@ var AdemisFeedback =
 	        this.editor = null;
 	
 	        this.state = {
-	            mode: 'highlight',
+	            mode: 'arrow',
 	            shapes: []
 	        };
 	
@@ -20679,9 +20679,7 @@ var AdemisFeedback =
 	        }
 	    }, {
 	        key: 'handleHelpButtonClick',
-	        value: function handleHelpButtonClick() {
-	            this.setState({ mode: 'help' });
-	        }
+	        value: function handleHelpButtonClick() {}
 	    }, {
 	        key: 'handleContinueButtonClick',
 	        value: function handleContinueButtonClick() {
@@ -20842,6 +20840,7 @@ var AdemisFeedback =
 	        this._canvas = null;
 	        this._fabric = null;
 	        this._overlay = null;
+	        this._arrow = null;
 	
 	        this._mouse = {
 	            isDraging: false,
@@ -20888,21 +20887,38 @@ var AdemisFeedback =
 	            this._mouse.initialDragPosition.x = mouse.x;
 	            this._mouse.initialDragPosition.y = mouse.y;
 	
-	            var square = new fabric.Rect({
-	                width: 0,
-	                height: 0,
-	                left: this._mouse.initialDragPosition.x,
-	                top: this._mouse.initialDragPosition.y,
-	                fill: 'transparent',
-	                selectable: false,
-	                hasControls: false,
-	                hasBorders: false,
-	                stroke: '#37474F',
-	                strokeWidth: 3
-	            });
+	            if (this.props.mode == 'highlight' || this.props.mode == 'hide') {
+	                var square = new fabric.Rect({
+	                    width: 0,
+	                    height: 0,
+	                    left: mouse.x,
+	                    top: mouse.y,
+	                    fill: 'transparent',
+	                    selectable: false,
+	                    hasControls: false,
+	                    hasBorders: false,
+	                    stroke: '#37474F',
+	                    strokeWidth: 3
+	                });
 	
-	            this._fabric.add(square);
-	            this._fabric.setActiveObject(square);
+	                this._fabric.add(square);
+	                this._fabric.setActiveObject(square);
+	            }
+	
+	            if (this.props.mode == 'arrow') {
+	                var line = new fabric.Line([mouse.x, mouse.y, mouse.x, mouse.y], {
+	                    selectable: false,
+	                    hasControls: false,
+	                    hasBorders: false,
+	                    stroke: '#FFD740',
+	                    strokeWidth: 5,
+	                    originX: 'center',
+	                    originY: 'center'
+	                });
+	
+	                this._fabric.add(line);
+	                this._fabric.setActiveObject(line);
+	            }
 	        }
 	    }, {
 	        key: 'handleDragMove',
@@ -20918,11 +20934,33 @@ var AdemisFeedback =
 	                return false;
 	            }
 	
-	            var square = this._fabric.getActiveObject();
-	            square.set('width', width);
-	            square.set('height', height);
+	            if (this.props.mode == 'highlight' || this.props.mode == 'hide') {
+	                var square = this._fabric.getActiveObject();
 	
-	            this._fabric.bringToFront(square);
+	                square.set('width', width);
+	                square.set('height', height);
+	
+	                this._fabric.bringToFront(square);
+	            }
+	
+	            if (this.props.mode == 'arrow') {
+	                if (this._arrow) {
+	                    this._fabric.remove(this._arrow);
+	                    this._arrow = null;
+	                }
+	
+	                var line = this._fabric.getActiveObject();
+	
+	                line.set('x2', event.e.clientX);
+	                line.set('y2', event.e.clientY);
+	
+	                this._arrow = _utilsFabricJsx2['default'].createArrowOnLine([this._mouse.initialDragPosition.x, this._mouse.initialDragPosition.y, event.e.clientX, event.e.clientY]);
+	
+	                this._fabric.add(this._arrow);
+	
+	                this._fabric.bringToFront(line);
+	                this._fabric.bringToFront(this._arrow);
+	            }
 	        }
 	    }, {
 	        key: 'handleDragStop',
@@ -20931,8 +20969,13 @@ var AdemisFeedback =
 	
 	            this._mouse.isDraging = false;
 	
-	            // Remove square
+	            // Remove temporary
 	            this._fabric.remove(this._fabric.getActiveObject());
+	
+	            if (this._arrow) {
+	                this._fabric.remove(this._arrow);
+	                this._arrow = null;
+	            }
 	
 	            var top = event.e.clientY;
 	            var left = event.e.clientX;
@@ -20979,6 +21022,22 @@ var AdemisFeedback =
 	                    stroke: '#37474F',
 	                    strokeWidth: 3
 	                }));
+	            }
+	
+	            if (this.props.mode == 'arrow') {
+	                var points = [this._mouse.initialDragPosition.x, this._mouse.initialDragPosition.y, event.e.clientX, event.e.clientY];
+	
+	                this._fabric.add(new fabric.Line(points, {
+	                    selectable: false,
+	                    hasControls: false,
+	                    hasBorders: false,
+	                    stroke: '#FFD740',
+	                    strokeWidth: 5,
+	                    originX: 'center',
+	                    originY: 'center'
+	                }));
+	
+	                this._fabric.add(_utilsFabricJsx2['default'].createArrowOnLine(points));
 	            }
 	        }
 	    }, {
@@ -21072,6 +21131,33 @@ var AdemisFeedback =
 	            croppedCanvas.getContext('2d').putImageData(croppedData, 0, 0);
 	
 	            return croppedCanvas.toDataURL('image/png');
+	        }
+	    }, {
+	        key: 'createArrowOnLine',
+	        value: function createArrowOnLine(points) {
+	            var headLength = 25,
+	                x1 = points[0],
+	                y1 = points[1],
+	                x2 = points[2],
+	                y2 = points[3],
+	                dx = x2 - x1,
+	                dy = y2 - y1,
+	                angle = Math.atan2(dy, dx);
+	
+	            angle *= 180 / Math.PI;
+	            angle += 90;
+	
+	            return new fabric.Triangle({
+	                angle: angle,
+	                fill: '#FFD740',
+	                top: y2,
+	                left: x2,
+	                height: headLength,
+	                width: headLength,
+	                originX: 'center',
+	                originY: 'center',
+	                selectable: false
+	            });
 	        }
 	    }]);
 	

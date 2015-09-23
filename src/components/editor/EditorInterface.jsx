@@ -36,7 +36,7 @@ export default class EditorInterface extends React.Component {
         this.editor = null;
 
         this.state = {
-            mode: 'highlight',
+            mode: 'arrow',
             shapes: []
         };
 
@@ -69,7 +69,7 @@ export default class EditorInterface extends React.Component {
     }
 
     handleHelpButtonClick() {
-        this.setState({ mode: 'help' });
+
     }
 
     handleContinueButtonClick() {

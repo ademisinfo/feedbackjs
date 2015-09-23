@@ -56,4 +56,33 @@ export default class Fabric {
         return croppedCanvas.toDataURL('image/png');
     }
 
+    static createArrowOnLine(points) {
+        let headLength = 25,
+
+            x1 = points[0],
+            y1 = points[1],
+            x2 = points[2],
+            y2 = points[3],
+
+            dx = x2 - x1,
+            dy = y2 - y1,
+
+            angle = Math.atan2(dy, dx);
+
+        angle *= 180 / Math.PI;
+        angle += 90;
+
+        return new fabric.Triangle({
+            angle: angle,
+            fill: '#FFD740',
+            top: y2,
+            left: x2,
+            height: headLength,
+            width: headLength,
+            originX: 'center',
+            originY: 'center',
+            selectable: false
+        });
+    }
+
 }
